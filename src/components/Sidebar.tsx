@@ -1,24 +1,28 @@
-import { useState } from "react";
-import { FaChevronRight, FaUniversity } from "react-icons/fa";
-import { IoPersonSharp } from "react-icons/io5";
+import { useEffect } from 'react';
+import { FaUniversity } from 'react-icons/fa';
+import { IoIosHome, IoMdMenu } from 'react-icons/io';
+import { IoPersonSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+
     const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
     return (
         <>
-        <div className={`transition-all duration-300 ${
-          open ? "w-64" : "w-16"} h-full p-5 bg-gradient-to-t from-indigo-800 to-gray-900 flex-col justify-center`}>
-            <button onClick={()=>setOpen(!open)}><FaChevronRight className={`text-amber-50 border-amber-50 rounded-full transition-all duration-400 ${open ?? 'rotate-180'}`}/></button>
-            <div className="pt-5">
-                <div className={`gap-4 transition-all duration-500 ${open ? 'block' : 'hidden'}`} onClick={()=>navigate('/pessoas')}>
-                    <h1 className="flex items-center p-2 gap-4 rounded-xl w-full text-lg text-white transition-all duration-400 hover:bg-indigo-900"> <IoPersonSharp /> Pessoa</h1>
-                </div>
-                <div className={`gap-4 transition-all duration-500 ${open ? 'block' : 'hidden'}`} onClick={()=>navigate('/cursos')}>
-                    <h1 className="flex items-center p-2 gap-4 rounded-xl w-full text-lg text-white transition-all duration-400 hover:bg-indigo-900"> <FaUniversity /> Cursos</h1>
-                </div>
-            </div>
+    <div className="drawer w-2/8">
+        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content">
+            <label htmlFor="my-drawer"><IoMdMenu className="pt-2 pl-2 size-12 rounded-sm"/></label>
+        </div>
+        <div className="drawer-side">
+            <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+            <ul className="menu bg-base-300 text-base-content min-h-full w-60 p-4">
+            {/* Sidebar content here */}
+            <li className="font-light text-xl"onClick={()=> navigate('/')}><a><IoIosHome className='text-green-500' />Home</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/pessoas')}><a><IoPersonSharp className='text-green-500'/>Pessoas</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/cursos')}><a> <FaUniversity className='text-green-500'/>Cursos</a></li>
+            </ul>
+        </div>
         </div>
         </>
     );
