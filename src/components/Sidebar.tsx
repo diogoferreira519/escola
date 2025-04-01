@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FaUniversity } from 'react-icons/fa';
 import { IoIosHome, IoMdMenu } from 'react-icons/io';
 import { IoPersonSharp } from 'react-icons/io5';
@@ -18,9 +17,9 @@ const Sidebar = () => {
             <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <ul className="menu bg-base-300 text-base-content min-h-full w-60 p-4">
             {/* Sidebar content here */}
-            <li className="font-light text-xl"onClick={()=> navigate('/')}><a><IoIosHome className='text-green-500' />Home</a></li>
-            <li className="font-light text-xl"onClick={()=> navigate('/pessoas')}><a><IoPersonSharp className='text-green-500'/>Pessoas</a></li>
-            <li className="font-light text-xl"onClick={()=> navigate('/cursos')}><a> <FaUniversity className='text-green-500'/>Cursos</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/')}><a><IoIosHome className='text-blue-500' />Home</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/pessoas')}><a><IoPersonSharp className='text-blue-500'/>Pessoas</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/cursos')}><a> <FaUniversity className='text-blue-500'/>Cursos</a></li>
             </ul>
         </div>
         </div>
