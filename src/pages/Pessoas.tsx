@@ -10,29 +10,28 @@ enum acaoPagina {
     primeira,
     ultima
 }
-
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
     const [alunos, setAlunos] = useState<ModelAluno[]>([]);
     const [paginaAtual, setPaginaAtual] = useState(1);
-    const itemsPorPagina = 10;
+    const [totalPaginas, setTotalPaginas] = useState(0);
     useEffect(() => {
         const getData = async ()=>{
-        const req = 'http://localhost:3333/pessoas';
-        const response = await axios.get(req)
+         await axios.get(import.meta.env.VITE_API_URL + '/pessoas')
             .then(response => {
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
                 }
-                console.log(response);
                 const converteAlunos = response.data.map((item: any)=> {
                     return new ModelAluno(item.id, item.nome, item.email, 
                                     item.cpf, item.ativo, item.role, 
                                     item.updatedAt, item.createdAt);
                 });
-                console.log(response);
                 setAlunos(converteAlunos);
+                if (converteAlunos != null && converteAlunos.length >= 1){
+                    setTotalPaginas(Math.ceil(converteAlunos.length/ 10));
+                }
             })
             .catch(err => {
                 setErro(err.message);
@@ -44,7 +43,7 @@ const Pessoas = ()=> {
     }, []);
 
     const changePagina = (acao : acaoPagina) => {
-        if (acao === acaoPagina.avanca){
+        if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas){
             setPaginaAtual(paginaAtual + 1);
         }
         else if (acao === acaoPagina.retrocede && paginaAtual !== 1){
@@ -54,7 +53,7 @@ const Pessoas = ()=> {
             setPaginaAtual(1);
         }
         else if (acao === acaoPagina.ultima){
-            setPaginaAtual(alunos.length / itemsPorPagina);
+            setPaginaAtual(totalPaginas);
         }
     }
 
@@ -71,11 +70,14 @@ const Pessoas = ()=> {
         </>
         )
     }
+
+    const alunosPaginados = alunos.slice(0, 10);
+
     return (
         <>
         <div>
-            <div className="overflow-x-auto">
-            <table className="table table-zebra table-sm">
+            <div>
+                <table className="table table-zebra table-sm">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -84,12 +86,12 @@ const Pessoas = ()=> {
                             <th>CPF</th>
                             <th>Ativo</th>
                             <th>Função</th>
-                            <th>Ações</th>
+                            <th className="w-3">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            alunos.map((aluno: ModelAluno) => {
+                            alunosPaginados.map((aluno: ModelAluno) => {
                             return (
                                 <tr key={aluno.getId()}> {/* Definindo uma chave única para cada linha */}
                                 <td>{aluno.getId()}</td>         {/* Exibindo o ID do aluno */}
@@ -119,13 +121,11 @@ const Pessoas = ()=> {
                     <button onClick={()=> changePagina(acaoPagina.ultima)} className="join-item btn">{'>>'}</button>
                   </div>
                 </div>
-
-               
-            <div className="flex justify-end">
-                <button className="btn btn-md bg-blue-700 hover:bg-blue-500">
-                Cadastrar
-                </button>
-            </div>
+                <div className="flex justify-end">
+                    <button className="btn btn-md bg-blue-700 hover:bg-blue-500">
+                    Cadastrar
+                    </button>
+                </div>
             </div>
         </div>
         </>

@@ -1,2 +1,12 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+html, body {
+    height: 100%;  /* Garante que o HTML e o Body ocupem toda a altura */
+    width: 100%;   /* Garante que o HTML e o Body ocupem toda a largura */
+  }
+  
+  #root {
+    height: 100%;  /* Garante que o contêiner #root ocupe toda a altura da tela */
+    width: 100%;   /* Garante que o contêiner #root ocupe toda a largura da tela */
+  }

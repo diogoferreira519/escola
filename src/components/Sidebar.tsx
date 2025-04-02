@@ -8,10 +8,10 @@ const Sidebar = () => {
     const navigate = useNavigate();
     return (
         <>
-    <div className="drawer w-2/8">
+    <div className="drawer">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
-            <label htmlFor="my-drawer"><IoMdMenu className="pt-2 pl-2 size-12 rounded-sm"/></label>
+            <label htmlFor="my-drawer"><IoMdMenu className="pt-2 size-12 rounded-sm"/></label>
         </div>
         <div className="drawer-side">
             <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>

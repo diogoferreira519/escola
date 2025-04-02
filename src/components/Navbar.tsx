@@ -1,13 +1,14 @@
+import { LiaUniversitySolid } from "react-icons/lia";
 import Sidebar from "./Sidebar";
 
 const Navbar = () => {
     return (
-        <div className="navbar bg-base-300 shadow-sm">
+        <div className="navbar bg-base-300 shadow-sm w-full">
         <div className="navbar-start">
             <Sidebar/>
         </div>
   <div className="navbar-center">
-    <a className="btn btn-ghost text-xl">University</a>
+    <a className="btn btn-ghost text-xl text-blue-400 hover:text-blue-100"><LiaUniversitySolid className="size-8" />University</a>
   </div>
   <div className="navbar-end">
     <button className="btn btn-ghost btn-circle">
