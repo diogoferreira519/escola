@@ -16,22 +16,24 @@ const Pessoas = ()=> {
     const [alunos, setAlunos] = useState<ModelAluno[]>([]);
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPaginas, setTotalPaginas] = useState(0);
+    const [totalRegistros, setTotalRegistros] = useState(0);
+    const [pesquisa, setPesquisa] = useState('');
     useEffect(() => {
         const getData = async ()=>{
-         await axios.get(import.meta.env.VITE_API_URL + '/pessoas')
+        const urlParams = new URLSearchParams(window.location.search);
+        const paginaUrl = urlParams.get('page');
+         await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + paginaUrl)
             .then(response => {
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
                 }
-                const converteAlunos = response.data.map((item: any)=> {
+                setAlunos(response.data?.rows?.map((item: any)=> {
                     return new ModelAluno(item.id, item.nome, item.email, 
                                     item.cpf, item.ativo, item.role, 
                                     item.updatedAt, item.createdAt);
-                });
-                setAlunos(converteAlunos);
-                if (converteAlunos != null && converteAlunos.length >= 1){
-                    setTotalPaginas(Math.ceil(converteAlunos.length/ 10));
-                }
+                }));
+               setTotalRegistros(response.data?.count);
+                setTotalPaginas(Math.ceil(response.data?.count/10));
             })
             .catch(err => {
                 setErro(err.message);
@@ -40,21 +42,28 @@ const Pessoas = ()=> {
         getData();
         
         setIsLoading(false);
-    }, []);
+    }, [paginaAtual]);
 
     const changePagina = (acao : acaoPagina) => {
-        if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas){
-            setPaginaAtual(paginaAtual + 1);
-        }
-        else if (acao === acaoPagina.retrocede && paginaAtual !== 1){
-            setPaginaAtual(paginaAtual - 1);
-        }
-        else if (acao === acaoPagina.primeira){
-            setPaginaAtual(1);
-        }
-        else if (acao === acaoPagina.ultima){
-            setPaginaAtual(totalPaginas);
-        }
+    let novaPagina = paginaAtual;
+
+    if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas) {
+        novaPagina = paginaAtual + 1;
+    } else if (acao === acaoPagina.retrocede && paginaAtual !== 1) {
+        novaPagina = paginaAtual - 1;
+    } else if (acao === acaoPagina.primeira) {
+        novaPagina = 1;
+    } else if (acao === acaoPagina.ultima) {
+        novaPagina = totalPaginas;
+    }
+
+    setPaginaAtual(novaPagina);
+
+    window.history.pushState({}, '', `?page=${novaPagina}`);
+    }
+
+    const onChangePesquisa = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPesquisa(event.target.value);
     }
 
     if (isLoading)
@@ -71,12 +80,16 @@ const Pessoas = ()=> {
         )
     }
 
-    const alunosPaginados = alunos.slice(0, 10);
-
     return (
         <>
         <div>
             <div>
+                <div className="flex justify-end mb-4">
+                    <label className="input w-1/10 transition-all duration-300 hover:w-1/4">
+                        <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
+                        <input type="search" required placeholder="Search" value={pesquisa} onChange={onChangePesquisa} />
+                    </label>
+                </div>
                 <table className="table table-zebra table-sm">
                     <thead>
                         <tr>
@@ -91,7 +104,7 @@ const Pessoas = ()=> {
                     </thead>
                     <tbody>
                         {
-                            alunosPaginados.map((aluno: ModelAluno) => {
+                            alunos.map((aluno: ModelAluno) => {
                             return (
                                 <tr key={aluno.getId()}> {/* Definindo uma chave única para cada linha */}
                                 <td>{aluno.getId()}</td>         {/* Exibindo o ID do aluno */}
@@ -112,6 +125,9 @@ const Pessoas = ()=> {
                 </table>
             </div>
             <div className="flex items-center justify-between mt-4">
+                <div>
+                    <span>Total Registros: {totalRegistros}</span>
+                </div>
                 <div className="flex-1 flex justify-center">
                   <div className="join">
                   <button onClick={()=> changePagina(acaoPagina.primeira)} className="join-item btn">{'<<'}</button>
