@@ -1,88 +1,22 @@
-import { useEffect, useState } from "react";
-import ModelAluno from "../models/ModelAluno";
-import axios from "axios";
-import { GoPencil } from "react-icons/go";
-import { MdDelete } from "react-icons/md";
+import { useState } from "react";
 
-enum acaoPagina {
-    avanca,
-    retrocede,
-    primeira,
-    ultima
+type Column<T> = {
+    header: string,
+    acessor: keyof T;
 }
 
-const Pessoas = ()=> {
-    const [isLoading, setIsLoading] = useState(true);
-    const [erro, setErro] = useState(null);
-    const [alunos, setAlunos] = useState<ModelAluno[]>([]);
+type TableProps<T> = {
+    data: T[],
+    columns: Column<T>[];
+}
 
-    useEffect(() => {
-        const getData = async ()=>{
-        const urlParams = new URLSearchParams(window.location.search);
-        const paginaUrl = urlParams.get('page');
-        await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + paginaUrl)
-            .then(response => {
-                if (!response.status){
-                throw new Error(`Erro na requisição ${response.status}`);
-                }
-                setAlunos(response.data?.rows?.map((item: any)=> {
-                    return new ModelAluno(item.id, item.nome, item.email, 
-                                    item.cpf, item.ativo, item.role, 
-                                    item.updatedAt, item.createdAt);
-                }));
-               setTotalRegistros(response.data?.count);
-               setTotalPaginas(Math.ceil(response.data?.count/10));
-            })
-            .catch(err => {
-                setErro(err.message);
-            })
-        }
-        getData();
-        
-        setIsLoading(false);
-    }, [paginaAtual]);
+const [paginaAtual, setPaginaAtual] = useState(1);
+const [totalPaginas, setTotalPaginas] = useState(0);
+const [totalRegistros, setTotalRegistros] = useState(0);
+const [pesquisa, setPesquisa] = useState('');
 
-    const changePagina = (acao : acaoPagina) => {
-    let novaPagina = paginaAtual;
-
-    if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas) {
-        novaPagina = paginaAtual + 1;
-    } else if (acao === acaoPagina.retrocede && paginaAtual !== 1) {
-        novaPagina = paginaAtual - 1;
-    } else if (acao === acaoPagina.primeira) {
-        novaPagina = 1;
-    } else if (acao === acaoPagina.ultima) {
-        novaPagina = totalPaginas;
-    }
-
-    setPaginaAtual(novaPagina);
-
-    window.history.pushState({}, '', `?page=${novaPagina}`);
-    }
-
-    const onChangePesquisa = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPesquisa(event.target.value);
-    }
-
-    // const onDelete = ()=> {
-        
-    // }
-
-    if (isLoading)
-        return <p>Carregando</p>;
-    if (erro != null){
-        return (
-        <>
-            <div className="toast">
-                <div className="alert alert-warning">
-                <span>{`Erro na requisição: ${erro}`}</span>
-                </div>
-            </div>
-        </>
-        )
-    }
-
-    return (
+const Table = <T,>({data, columns}: TableProps<T>) => {
+    return(<>
         <>
         <div>
             <div>
@@ -165,7 +99,7 @@ const Pessoas = ()=> {
             </div>
         </div>
         </>
-    )
+        </>)
 }
 
-export default Pessoas;
+export default Table;

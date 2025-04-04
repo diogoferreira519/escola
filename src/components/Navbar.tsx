@@ -20,6 +20,13 @@ const Navbar = () => {
         <span className="badge badge-xs badge-primary indicator-item"></span>
       </div>
     </button>
+    <div>
+    <div className="avatar px-8">
+      <div className="w-8 rounded-full">
+        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+      </div>
+    </div>
+    </div>
   </div>
 </div>
     );

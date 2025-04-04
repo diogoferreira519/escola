@@ -13,13 +13,13 @@ const Sidebar = () => {
         <div className="drawer-content">
             <label htmlFor="my-drawer"><IoMdMenu className="pt-2 size-12 rounded-sm"/></label>
         </div>
-        <div className="drawer-side">
+        <div className="drawer-side w-full">
             <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-            <ul className="menu bg-base-300 text-base-content min-h-full w-60 p-4">
+            <ul className="menu bg-base-300 text-base-content min-h-full  w-60 p-4">
             {/* Sidebar content here */}
-            <li className="font-light text-xl"onClick={()=> navigate('/')}><a><IoIosHome className='text-blue-500' />Home</a></li>
-            <li className="font-light text-xl"onClick={()=> navigate('/pessoas?page=1')}><a><IoPersonSharp className='text-blue-500'/>Pessoas</a></li>
-            <li className="font-light text-xl"onClick={()=> navigate('/cursos?page=1')}><a> <FaUniversity className='text-blue-500'/>Cursos</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/')}><a><IoIosHome className='text-blue-400' />Home</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/pessoas?page=1')}><a><IoPersonSharp className='text-blue-400'/>Pessoas</a></li>
+            <li className="font-light text-xl"onClick={()=> navigate('/cursos?page=1')}><a> <FaUniversity className='text-blue-400'/>Cursos</a></li>
             </ul>
         </div>
         </div>
