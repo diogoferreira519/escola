@@ -1,72 +1,47 @@
 import { useEffect, useState } from "react";
-import ModelAluno from "../models/ModelAluno";
+import ModelPessoa from "../models/ModelPessoa";
 import axios from "axios";
-import { GoPencil } from "react-icons/go";
-import { MdDelete } from "react-icons/md";
-
-enum acaoPagina {
-    avanca,
-    retrocede,
-    primeira,
-    ultima
-}
+import Table from "../components/Table";
+import Column from "../types/ColumnType";
+import { useLocation } from "react-router-dom";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
-    const [alunos, setAlunos] = useState<ModelAluno[]>([]);
+    const [data, setData] = useState<ModelPessoa[]>([]);
+    const [totalRegistros, setTotalRegistros] = useState<Number>(1);
+    const [totalPaginas, setTotalPaginas] = useState<Number>(1);
+    const location = useLocation();
+    const [paginaUrl, setPaginaUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
 
     useEffect(() => {
         const getData = async ()=>{
-        const urlParams = new URLSearchParams(window.location.search);
-        const paginaUrl = urlParams.get('page');
         await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + paginaUrl)
             .then(response => {
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
                 }
-                setAlunos(response.data?.rows?.map((item: any)=> {
-                    return new ModelAluno(item.id, item.nome, item.email, 
+                setData(response.data?.rows?.map((item: any)=> {
+                    return new ModelPessoa(item.id, item.nome, item.email, 
                                     item.cpf, item.ativo, item.role, 
                                     item.updatedAt, item.createdAt);
                 }));
-               setTotalRegistros(response.data?.count);
-               setTotalPaginas(Math.ceil(response.data?.count/10));
+                setTotalRegistros(response.data.count);
+                setTotalPaginas(Math.ceil(response.data.count/10));
             })
             .catch(err => {
                 setErro(err.message);
             })
         }
         getData();
-        
+   
         setIsLoading(false);
-    }, [paginaAtual]);
+    }, [paginaUrl]);
 
-    const changePagina = (acao : acaoPagina) => {
-    let novaPagina = paginaAtual;
-
-    if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas) {
-        novaPagina = paginaAtual + 1;
-    } else if (acao === acaoPagina.retrocede && paginaAtual !== 1) {
-        novaPagina = paginaAtual - 1;
-    } else if (acao === acaoPagina.primeira) {
-        novaPagina = 1;
-    } else if (acao === acaoPagina.ultima) {
-        novaPagina = totalPaginas;
+    const changePagina = (pagina: string) => {
+        setPaginaUrl(pagina);
+        window.history.pushState({}, '', `?page=${pagina}`);
     }
-
-    setPaginaAtual(novaPagina);
-
-    window.history.pushState({}, '', `?page=${novaPagina}`);
-    }
-
-    const onChangePesquisa = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPesquisa(event.target.value);
-    }
-
-    // const onDelete = ()=> {
-        
-    // }
 
     if (isLoading)
         return <p>Carregando</p>;
@@ -82,88 +57,18 @@ const Pessoas = ()=> {
         )
     }
 
+    const colunas: Column<ModelPessoa>[] = [
+        { header: "ID", acessor: 'getId' },
+        { header: "Nome", acessor: 'getNome' },
+        { header: "Email", acessor: 'getEmail' },
+        { header: "CPF", acessor: 'getCpf' },
+        { header: "Função", acessor: 'getRole' },
+        { header: "Ativo", acessor: 'getAtivo' },
+      ];
+
     return (
         <>
-        <div>
-            <div>
-                <div className="flex justify-end mb-4">
-                    <label className="input w-1/10 transition-all duration-300 hover:w-1/4">
-                        <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-                        <input type="search" required placeholder="Search" value={pesquisa} onChange={onChangePesquisa} />
-                    </label>
-                </div>
-                <table className="table table-zebra table-sm">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>CPF</th>
-                            <th>Ativo</th>
-                            <th>Função</th>
-                            <th className="w-3">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            alunos.map((aluno: ModelAluno) => {
-                            return (
-                                <tr key={aluno.getId()}> {/* Definindo uma chave única para cada linha */}
-                                <td>{aluno.getId()}</td>         {/* Exibindo o ID do aluno */}
-                                <td>{aluno.getNome()}</td>       {/* Exibindo o nome do aluno */}
-                                <td>{aluno.getEmail()}</td>      {/* Exibindo o email do aluno */}
-                                <td>{aluno.getCpf()}</td>        {/* Exibindo o CPF do aluno */}
-                                <td>{aluno.isAtivo() ? 'Sim' : 'Não'}</td> {/* Exibindo se o aluno está ativo ou não */}
-                                <td>{aluno.getRole()}</td>       {/* Exibindo o papel do aluno */}
-                                <td className="flex gap-2">
-                                    <button className="btn btn-outline p-3 btn-warning"><GoPencil/></button> 
-                                    <button className="btn btn-outline p-3 btn-error"><MdDelete /></button></td>
-                                </tr>
-                            );
-                            })
-                        }
-                    </tbody>
-
-                </table>
-            </div>
-            <div className="flex items-center justify-between mt-4">
-                <div>
-                    <span>Total Registros: {totalRegistros}</span>
-                </div>
-                <div className="flex-1 flex justify-center">
-                  <div className="join">
-                  <button onClick={()=> changePagina(acaoPagina.primeira)} className="join-item btn">{'<<'}</button>
-                  <button onClick={()=> changePagina(acaoPagina.retrocede)} className="join-item btn">{'<'}</button>
-                    <button className="join-item btn">{paginaAtual}</button>
-                    <button onClick={()=> changePagina(acaoPagina.avanca)}className="join-item btn" >{'>'}</button>
-                    <button onClick={()=> changePagina(acaoPagina.ultima)} className="join-item btn">{'>>'}</button>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                    <button className="btn hover:text-blue-400" onClick={()=>document.getElementById('my_modal_3').showModal()}>Cadastrar</button>
-                    <dialog id="my_modal_3" className="modal">
-                    <div className="modal-box">
-                        <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                        </form>
-                        <h3 className="font-bold text-lg mb-2">Cadastro de Pessoa</h3>
-                        <div className="flex items-center gap-4">
-                            <p className="py-4 w-10">Nome:</p>
-                            <input type="text" placeholder="Type here" className="input w-10/12" />
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <p className="py-4 w-10">Email:</p>
-                            <input type="text" placeholder="Type here" className="input w-10/12" />
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <p className="py-4 w-10">CPF:</p>
-                            <input type="text" placeholder="Type here" className="input w-10/12" />
-                        </div>
-                    </div>
-                    </dialog>
-                </div>
-            </div>
-        </div>
+           <Table data={data} columns={colunas} totalRegistros={totalRegistros} totalPaginas={totalPaginas} changePaginaPai={changePagina}/> 
         </>
     )
 }

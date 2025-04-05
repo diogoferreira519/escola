@@ -1,4 +1,4 @@
-class ModelAluno {
+class ModelPessoa {
   private id: number | undefined;
   private nome: string;
   private email: string;
@@ -41,6 +41,10 @@ class ModelAluno {
 
   public isAtivo(): boolean {
     return this.ativo;
+  }
+
+  public getAtivo() {
+    return this.ativo ? 'Sim' : 'Não';
   }
 
   public getRole(): string {
@@ -89,4 +93,4 @@ class ModelAluno {
 
 }
 
-export default ModelAluno;
+export default ModelPessoa;
