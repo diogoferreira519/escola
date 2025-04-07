@@ -35,8 +35,8 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
         onEditOrDelete(id, false, null);
       };
     
-    const handleEdit = (id: number, Model: T) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        onEditOrDelete(id, true, Model);
+    const handleEdit = () => (e: React.MouseEvent<HTMLButtonElement>) => {
+        onEditOrDelete(model.getId(), true, model);
     };
     
     return(
@@ -58,7 +58,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                 </thead>
                 <tbody>
                 {
-                    data.map((item, index) => {
+                    data.map((item: ModelPessoa, index) => {
                         return (
                             <tr key={index}>
                                 {columns.map((column, indexColumn) => (
@@ -70,21 +70,23 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                 <td className="flex gap-2">
                                 <Modal<ModelPessoa>
                                     classButton="btn btn-outline p-3 btn-warning"
-                                    idButton={`modal_edit_${item.id}`}
+                                    idButton={`modal_edit_${item.getId()}`}
                                     contentButton={<GoPencil />}
                                     contentModal={columns}
                                     title="Editar item"
-                                    id={item.id}
-                                    onConfirm={()=> handleEdit(item.id)}
+                                    isEdit = {true}
+                                    model={item}
+                                    onConfirm={(updatedModel)=> handleEdit(updatedModel)}
                                 />
-                                <Modal
+                                <Modal<ModelPessoa>
                                     classButton="btn btn-outline p-3 btn-error"
-                                    idButton={`modal_delete_${item.id}`}
+                                    idButton={`modal_delete_${item.getId()}`}
                                     contentButton={<MdDelete />}
-                                    contentModal={<p>Deseja excluir <strong>{item.nome}</strong>?</p>}
+                                    contentModal={<p>Deseja excluir <strong>{item.getNome()}</strong>?</p>}
                                     title="Excluir item"
-                                    id={item.id}
-                                    onConfirm={()=> handleDelete(item.id)}
+                                    model = {item}
+                                    isEdit = {false}
+                                    onConfirm={()=> handleDelete(item.getId())}
                                 />
                                 </td>
                             </tr>
