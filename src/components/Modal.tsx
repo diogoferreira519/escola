@@ -27,7 +27,18 @@ type ModalProps<T> = {
 
     const [genericModel, setGenericModel] = useState<T>(model);
 
-    const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    const handleConfirm = () => {
+      const form = document.getElementById(`form-${idButton}`) as HTMLFormElement;
+      const formData = new FormData(form);
+  
+      const updatedModel: Partial<T> = {};
+      formData.forEach((value, key) => {
+        (updatedModel as any)[key] = value;
+      });
+  
+      onConfirm(updatedModel);
+      (document.getElementById(idButton) as HTMLDialogElement)?.close();
+    };
 
     return(
         <>
@@ -49,7 +60,6 @@ type ModalProps<T> = {
                       type={content.header !== 'ID' ? 'text' : 'hidden'}
                       className="input input-bordered"
                       name={content.acessor}
-                      onChange={(e) => (model as any)?.[`set${capitalize(content.acessor)}()`]?.(e.target.value)}
                       defaultValue={genericModel?.[content.acessor]()}
                     />
                   </div>
@@ -61,10 +71,7 @@ type ModalProps<T> = {
             <div className="modal-action">
             <form method="dialog">
                 <button className="btn">Cancelar</button>
-                <button className="btn" onClick={()=> {
-                  setGenericModel(model);
-                  onConfirm(genericModel)
-                }}>Confirmar</button>
+                <button className="btn" onClick={handleConfirm}>Confirmar</button>
             </form>
             </div>
         </div>
