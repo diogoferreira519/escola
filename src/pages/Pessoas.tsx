@@ -12,20 +12,20 @@ const Pessoas = ()=> {
     const [totalRegistros, setTotalRegistros] = useState<number>(1);
     const [totalPaginas, setTotalPaginas] = useState<number>(1);
     const location = useLocation();
-    const [paginaUrl, setPaginaUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
+    const [pageUrl, setPageUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
 
     useEffect(() => {
         getData();
         setIsLoading(false);
-    }, [paginaUrl]);
+    }, [pageUrl]);
 
     const changePagina = (pagina: string) => {
-        setPaginaUrl(pagina);
+        setPageUrl(pagina);
         window.history.pushState({}, '', `?page=${pagina}`);
     }
 
     const getData = async ()=>{
-        await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + paginaUrl)
+        await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl)
             .then(response => {
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
@@ -43,7 +43,7 @@ const Pessoas = ()=> {
             })
         }
 
-    const onEditOrDelete = (id: number, editar: boolean): MouseEventHandler<HTMLButtonElement> => {
+    const onEditOrDelete = (id: number, editar: boolean, Model: ModelPessoa | null): MouseEventHandler<HTMLButtonElement> => {
         if (editar) {
             console.log('editou')
         }
@@ -77,7 +77,13 @@ const Pessoas = ()=> {
 
     return (
         <>
-           <Table data={data} columns={colunas} totalRegistros={totalRegistros} totalPaginas={totalPaginas} changePaginaPai={changePagina} onEditOrDelete={onEditOrDelete}/> 
+            <Table data={data} 
+                   columns={colunas} 
+                   totalRegistros={totalRegistros} 
+                   totalPaginas={totalPaginas} 
+                   changePaginaPai={changePagina}
+                   onEditOrDelete={onEditOrDelete}
+            /> 
         </>
     )
 }

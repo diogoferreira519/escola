@@ -7,6 +7,6 @@ type TableProps<T> = {
     totalRegistros: number;
     totalPaginas: number;
     changePaginaPai: (pagina: string)=>void;
-    onEditOrDelete: (id: number, isEdit: boolean)=> MouseEventHandler<HTMLButtonElement>;
+    onEditOrDelete: (id: number, isEdit: boolean, Model: T | null)=> MouseEventHandler<HTMLButtonElement>;
 }
 export default TableProps;

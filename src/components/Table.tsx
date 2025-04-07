@@ -1,41 +1,42 @@
 import { useState } from "react";
 import { GoPencil } from "react-icons/go";
 import { MdDelete } from "react-icons/md";
-import acaoPagina from "../enums/AcaoPagina";
+import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
+import ModelPessoa from "../models/ModelPessoa";
 
 const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete}: TableProps<T>) => {
 
-    const [paginaAtual, setPaginaAtual] = useState<number>(1);
-    const [pesquisa, setPesquisa] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [search, setSearch] = useState<string>('');
 
-    const changePagina = (acao : acaoPagina) => {
-        let novaPagina = paginaAtual;
-        if (acao === acaoPagina.avanca && paginaAtual + 1 <= totalPaginas) {
-            novaPagina = paginaAtual + 1;
-        } else if (acao === acaoPagina.retrocede && paginaAtual !== 1) {
-            novaPagina = paginaAtual - 1;
-        } else if (acao === acaoPagina.primeira) {
+    const changePage = (acao : actionPage) => {
+        let novaPagina = currentPage;
+        if (acao === actionPage.avanca && currentPage + 1 <= totalPaginas) {
+            novaPagina = currentPage + 1;
+        } else if (acao === actionPage.retrocede && currentPage !== 1) {
+            novaPagina = currentPage - 1;
+        } else if (acao === actionPage.primeira) {
             novaPagina = 1;
-        } else if (acao === acaoPagina.ultima) {
+        } else if (acao === actionPage.ultima) {
             novaPagina = totalPaginas;
         }
 
-        setPaginaAtual(novaPagina);
+        setCurrentPage(novaPagina);
         changePaginaPai(String(novaPagina));
     }
 
-    const onChangePesquisa = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPesquisa(event.target.value);
+    const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
     }
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        onEditOrDelete(id, false);
+        onEditOrDelete(id, false, null);
       };
     
-    const handleEdit = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        onEditOrDelete(id, true);
+    const handleEdit = (id: number, Model: T) => (e: React.MouseEvent<HTMLButtonElement>) => {
+        onEditOrDelete(id, true, Model);
     };
     
     return(
@@ -43,7 +44,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
             <div className="flex justify-end mb-4">
                 <label className="input w-1/10 transition-all duration-300 hover:w-1/4">
                     <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-                    <input type="search" required placeholder="Search" value={pesquisa} onChange={onChangePesquisa} />
+                    <input type="search" required placeholder="Search" value={search} onChange={onChangeSearch} />
                 </label>
             </div>
             <table className="table table-zebra table-sm">
@@ -67,11 +68,11 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                 ))}
 
                                 <td className="flex gap-2">
-                                <Modal
+                                <Modal<ModelPessoa>
                                     classButton="btn btn-outline p-3 btn-warning"
                                     idButton={`modal_edit_${item.id}`}
                                     contentButton={<GoPencil />}
-                                    contentModal={<p>Deseja editar <strong>{item.nome}</strong>?</p>}
+                                    contentModal={columns}
                                     title="Editar item"
                                     id={item.id}
                                     onConfirm={()=> handleEdit(item.id)}
@@ -98,11 +99,11 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                 </div>
                 <div className="flex-1 flex justify-center">
                     <div className="join">
-                        <button onClick={()=> changePagina(acaoPagina.primeira)} className="join-item btn">{'<<'}</button>
-                        <button onClick={()=> changePagina(acaoPagina.retrocede)} className="join-item btn">{'<'}</button>
-                        <button className="join-item btn">{paginaAtual}</button>
-                        <button onClick={()=> changePagina(acaoPagina.avanca)}className="join-item btn" >{'>'}</button>
-                        <button onClick={()=> changePagina(acaoPagina.ultima)} className="join-item btn">{'>>'}</button>
+                        <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn">{'<<'}</button>
+                        <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn">{'<'}</button>
+                        <button className="join-item btn">{currentPage}</button>
+                        <button onClick={()=> changePage(actionPage.avanca)}className="join-item btn" >{'>'}</button>
+                        <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn">{'>>'}</button>
                     </div>
                 </div>
                 <div className="flex justify-end">

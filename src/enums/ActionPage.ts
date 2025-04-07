@@ -1,8 +1,8 @@
-enum acaoPagina {
+enum actionPage {
     avanca,
     retrocede,
     primeira,
     ultima
 }
 
-export default acaoPagina;
+export default actionPage;
