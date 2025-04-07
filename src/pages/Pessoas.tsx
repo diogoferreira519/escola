@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import ModelPessoa from "../models/ModelPessoa";
 import axios from "axios";
 import Table from "../components/Table";
@@ -9,8 +9,8 @@ const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
     const [data, setData] = useState<ModelPessoa[]>([]);
-    const [totalRegistros, setTotalRegistros] = useState<Number>(1);
-    const [totalPaginas, setTotalPaginas] = useState<Number>(1);
+    const [totalRegistros, setTotalRegistros] = useState<number>(1);
+    const [totalPaginas, setTotalPaginas] = useState<number>(1);
     const location = useLocation();
     const [paginaUrl, setPaginaUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
 
@@ -43,6 +43,15 @@ const Pessoas = ()=> {
         window.history.pushState({}, '', `?page=${pagina}`);
     }
 
+    const onEditOrDelete = (id: number, editar: boolean): MouseEventHandler<HTMLButtonElement> => {
+        if (editar) {
+            
+        }
+        else{
+
+        }
+    }
+
     if (isLoading)
         return <p>Carregando</p>;
     if (erro != null){
@@ -68,7 +77,7 @@ const Pessoas = ()=> {
 
     return (
         <>
-           <Table data={data} columns={colunas} totalRegistros={totalRegistros} totalPaginas={totalPaginas} changePaginaPai={changePagina}/> 
+           <Table data={data} columns={colunas} totalRegistros={totalRegistros} totalPaginas={totalPaginas} changePaginaPai={changePagina} onEditOrDelete={onEditOrDelete}/> 
         </>
     )
 }

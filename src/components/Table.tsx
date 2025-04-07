@@ -4,10 +4,11 @@ import { MdDelete } from "react-icons/md";
 import acaoPagina from "../enums/AcaoPagina";
 import TableProps from "../types/TableProps";
 
-const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete}: TableProps<T>) => {
 
     const [paginaAtual, setPaginaAtual] = useState<number>(1);
     const [pesquisa, setPesquisa] = useState<string>('');
+    const [itemSelecionado, setItemSelecionado] = useState<T>();
 
     const changePagina = (acao : acaoPagina) => {
         let novaPagina = paginaAtual;
@@ -56,9 +57,10 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                                 {item[column.acessor]()} 
                                     </td>
                                 ))}
+
                                 <td className="flex gap-2">
-                                    <button className="btn btn-outline p-3 btn-warning"><GoPencil /></button>
-                                    <button className="btn btn-outline p-3 btn-error"><MdDelete /></button>
+                                    <button className="btn btn-outline p-3 btn-warning" onClick={()=> setItemSelecionado(item)}><GoPencil /></button>
+                                    <button className="btn btn-outline p-3 btn-error" onClick={()=> onEditOrDelete(item.id, false)}><MdDelete /></button>
                                 </td>
                             </tr>
                         );
