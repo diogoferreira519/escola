@@ -45,10 +45,10 @@ const Pessoas = ()=> {
 
     const onEditOrDelete = (id: number, editar: boolean): MouseEventHandler<HTMLButtonElement> => {
         if (editar) {
-            
+            console.log('editou')
         }
         else{
-
+            console.log('excluir')
         }
     }
 

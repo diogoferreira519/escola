@@ -3,12 +3,12 @@ import { GoPencil } from "react-icons/go";
 import { MdDelete } from "react-icons/md";
 import acaoPagina from "../enums/AcaoPagina";
 import TableProps from "../types/TableProps";
+import Modal from "./Modal";
 
 const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete}: TableProps<T>) => {
 
     const [paginaAtual, setPaginaAtual] = useState<number>(1);
     const [pesquisa, setPesquisa] = useState<string>('');
-    const [itemSelecionado, setItemSelecionado] = useState<T>();
 
     const changePagina = (acao : acaoPagina) => {
         let novaPagina = paginaAtual;
@@ -29,6 +29,14 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
     const onChangePesquisa = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPesquisa(event.target.value);
     }
+
+    const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("Deletando item com ID:", id);
+      };
+    
+    const handleEdit = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("Editando item com ID:", id);
+    };
     
     return(
         <div>
@@ -59,9 +67,26 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                 ))}
 
                                 <td className="flex gap-2">
-                                    <button className="btn btn-outline p-3 btn-warning" onClick={()=> setItemSelecionado(item)}><GoPencil /></button>
-                                    <button className="btn btn-outline p-3 btn-error" onClick={()=> onEditOrDelete(item.id, false)}><MdDelete /></button>
+                                <Modal
+                                    classButton="btn btn-outline p-3 btn-warning"
+                                    idButton={item.id}
+                                    contentButton={<GoPencil />}
+                                    contentModal={<p>Deseja editar <strong>{item.nome}</strong>?</p>}
+                                    title="Editar item"
+                                    id={item.id}
+                                    onConfirm={handleEdit(item.id)}
+                                />
+                                <Modal
+                                    classButton="btn btn-outline p-3 btn-error"
+                                    idButton={item.id + 1}
+                                    contentButton={<MdDelete />}
+                                    contentModal={<p>Deseja excluir <strong>{item.nome}</strong>?</p>}
+                                    title="Excluir item"
+                                    id={item.id}
+                                    onConfirm={handleDelete(item.id)}
+                                />
                                 </td>
+                                   
                             </tr>
                         );
                     })
