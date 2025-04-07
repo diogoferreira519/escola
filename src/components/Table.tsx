@@ -31,11 +31,11 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
     }
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("Deletando item com ID:", id);
+        onEditOrDelete(id, false);
       };
     
     const handleEdit = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("Editando item com ID:", id);
+        onEditOrDelete(id, true);
     };
     
     return(
@@ -69,24 +69,23 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                 <td className="flex gap-2">
                                 <Modal
                                     classButton="btn btn-outline p-3 btn-warning"
-                                    idButton={item.id}
+                                    idButton={`modal_edit_${item.id}`}
                                     contentButton={<GoPencil />}
                                     contentModal={<p>Deseja editar <strong>{item.nome}</strong>?</p>}
                                     title="Editar item"
                                     id={item.id}
-                                    onConfirm={handleEdit(item.id)}
+                                    onConfirm={()=> handleEdit(item.id)}
                                 />
                                 <Modal
                                     classButton="btn btn-outline p-3 btn-error"
-                                    idButton={item.id + 1}
+                                    idButton={`modal_delete_${item.id}`}
                                     contentButton={<MdDelete />}
                                     contentModal={<p>Deseja excluir <strong>{item.nome}</strong>?</p>}
                                     title="Excluir item"
                                     id={item.id}
-                                    onConfirm={handleDelete(item.id)}
+                                    onConfirm={()=> handleDelete(item.id)}
                                 />
                                 </td>
-                                   
                             </tr>
                         );
                     })

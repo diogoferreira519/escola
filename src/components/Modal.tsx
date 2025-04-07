@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({classButton,
             <form method="dialog">
                 {/* if there is a button in form, it will close the modal */}
                 <button className="btn">Cancelar</button>
-                <button className="btn" onClick={()=> onConfirm(id)}>Confirmar</button>
+                <button className="btn" onClick={onConfirm(id)}>Confirmar</button>
             </form>
             </div>
         </div>

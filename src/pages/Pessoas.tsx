@@ -15,7 +15,16 @@ const Pessoas = ()=> {
     const [paginaUrl, setPaginaUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
 
     useEffect(() => {
-        const getData = async ()=>{
+        getData();
+        setIsLoading(false);
+    }, [paginaUrl]);
+
+    const changePagina = (pagina: string) => {
+        setPaginaUrl(pagina);
+        window.history.pushState({}, '', `?page=${pagina}`);
+    }
+
+    const getData = async ()=>{
         await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + paginaUrl)
             .then(response => {
                 if (!response.status){
@@ -33,15 +42,6 @@ const Pessoas = ()=> {
                 setErro(err.message);
             })
         }
-        getData();
-   
-        setIsLoading(false);
-    }, [paginaUrl]);
-
-    const changePagina = (pagina: string) => {
-        setPaginaUrl(pagina);
-        window.history.pushState({}, '', `?page=${pagina}`);
-    }
 
     const onEditOrDelete = (id: number, editar: boolean): MouseEventHandler<HTMLButtonElement> => {
         if (editar) {
