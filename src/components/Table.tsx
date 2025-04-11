@@ -5,6 +5,7 @@ import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
 import ModelPessoa from "../models/ModelPessoa";
+import ModalEdit from "./ModalEdit";
 
 const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete}: TableProps<T>) => {
 
@@ -68,25 +69,23 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                 ))}
 
                                 <td className="flex gap-2">
-                                <Modal<ModelPessoa>
+                                <ModalEdit<ModelPessoa>
                                     classButton="btn btn-outline p-3 btn-warning"
                                     idButton={`modal_edit_${item.getId()}`}
                                     contentButton={<GoPencil />}
                                     contentModal={columns}
                                     title="Editar item"
-                                    isEdit = {true}
                                     model={item}
                                     onConfirm={(updatedModel)=> handleEdit(updatedModel)}
                                 />
-                                <Modal<ModelPessoa>
+                                <Modal
                                     classButton="btn btn-outline p-3 btn-error"
                                     idButton={`modal_delete_${item.getId()}`}
                                     contentButton={<MdDelete />}
                                     contentModal={<p>Deseja excluir <strong>{item.getNome()}</strong>?</p>}
                                     title="Excluir item"
-                                    model = {item}
-                                    isEdit = {false}
-                                    onConfirm={()=> handleDelete(item.getId())}
+                                    id= {item.getId()}
+                                    onConfirm={(id)=> handleDelete(id)}
                                 />
                                 </td>
                             </tr>
