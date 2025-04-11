@@ -6,10 +6,10 @@ import TableProps from "../types/TableProps";
 import Modal from "./Modal";
 import ModelPessoa from "../models/ModelPessoa";
 
-const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete, onSearch}: TableProps<T>) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [search, setSearch] = useState<string>('');
+    const [search, setSearch] = useState<string>();
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
@@ -28,7 +28,9 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
     }
 
     const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(event.target.value);
+        const valor = event.target.value;
+        setSearch(valor);
+        onSearch(valor);
     }
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -97,21 +99,21 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                     </tbody>
                 </table>
             </div>
-            <div className="flex items-center justify-between mt-4">
-                <div>
-                    <span>Total Registros: {Number(totalRegistros)}</span>
+            <div className="flex items-center justify-between mt-4 flex-wrap">
+                <div className="mb-2 md:mb-0"> 
+                    <span className="text-sm">Total Registros: {Number(totalRegistros)}</span>
                 </div>
-                <div className="flex-1 flex justify-center">
+                <div className="flex-1 flex justify-center mb-2 md:mb-0"> 
                     <div className="join">
-                        <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn">{'<<'}</button>
-                        <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn">{'<'}</button>
-                        <button className="join-item btn">{currentPage}</button>
-                        <button onClick={()=> changePage(actionPage.avanca)}className="join-item btn" >{'>'}</button>
-                        <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn">{'>>'}</button>
+                        <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<<'}</button>
+                        <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<'}</button>
+                        <button className="join-item btn btn-xs sm:btn-sm md:btn-md">{currentPage}</button>
+                        <button onClick={()=> changePage(actionPage.avanca)}className="join-item btn btn-xs sm:btn-sm md:btn-md" >{'>'}</button>
+                        <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'>>'}</button>
                     </div>
                 </div>
                 <div className="flex justify-end">
-                    <button className="btn btn-md bg-blue-700 hover:bg-blue-500">
+                    <button className="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500">
                     Cadastrar
                     </button>
                 </div>
