@@ -9,6 +9,7 @@ const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
     const [data, setData] = useState<ModelPessoa[]>([]);
+    const [search, setSearch] = useState<string>();
     const [totalRegistros, setTotalRegistros] = useState<number>(1);
     const [totalPaginas, setTotalPaginas] = useState<number>(1);
     const location = useLocation();
@@ -17,7 +18,7 @@ const Pessoas = ()=> {
     useEffect(() => {
         getData();
         setIsLoading(false);
-    }, [pageUrl]);
+    }, [pageUrl, search]);
 
     const changePagina = (pagina: string) => {
         setPageUrl(pagina);
@@ -25,23 +26,38 @@ const Pessoas = ()=> {
     }
 
     const getData = async ()=>{
-        await axios.get(import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl)
+        const url = import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl  + (search != null ? '&search='+search : '');
+        await axios.get(url)
             .then(response => {
+                console.log(response)
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
                 }
-                setData(response.data?.rows?.map((item: any)=> {
-                    return new ModelPessoa(item.id, item.nome, item.email, 
-                                    item.cpf, item.ativo, item.role, 
-                                    item.updatedAt, item.createdAt);
-                }));
+                if (response.data?.rows){
+                    setData(response.data.rows.map((item: any)=> {
+                        return new ModelPessoa(item.id, item.nome, item.email, 
+                                        item.cpf, item.ativo, item.role, 
+                                        item.updatedAt, item.createdAt);
+                    }));
+                }
+                else if(response.data){
+                    setData(response.data.map((item: any)=> {
+                        return new ModelPessoa(item.id, item.nome, item.email, 
+                                        item.cpf, item.ativo, item.role, 
+                                        item.updatedAt, item.createdAt);
+                    }));
+                }
                 setTotalRegistros(response.data.count);
                 setTotalPaginas(Math.ceil(response.data.count/10));
             })
             .catch(err => {
                 setErro(err.message);
-            })
-        }
+        })
+    }
+    const onSearch = (searchProp: string) => {
+        console.log('chegou?')
+        setSearch(searchProp);
+    }
 
     const onEditOrDelete = (id: number, editar: boolean, Model: ModelPessoa | null): MouseEventHandler<HTMLButtonElement> => {
         if (editar) {
@@ -83,6 +99,7 @@ const Pessoas = ()=> {
                    totalPaginas={totalPaginas} 
                    changePaginaPai={changePagina}
                    onEditOrDelete={onEditOrDelete}
+                   onSearch={onSearch}
             /> 
         </>
     )

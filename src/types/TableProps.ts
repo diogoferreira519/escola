@@ -8,5 +8,6 @@ type TableProps<T> = {
     totalPaginas: number;
     changePaginaPai: (pagina: string)=>void;
     onEditOrDelete: (id: number, isEdit: boolean, Model: T | null)=> MouseEventHandler<HTMLButtonElement>;
+    onSearch: (search: string)=> void;
 }
 export default TableProps;

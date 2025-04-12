@@ -27,9 +27,9 @@ import ModalEditProps from "../types/ModalEditType";
                      contentModal.map((content, i) => (
                         <div key={i} className="form-control mb-2">
                           <label className="label w-20">
-                          <span className={`label-text ${content.header === 'ID' ? 'hidden' : ''}`}>
-                          {content.header}
-                        </span>
+                            <span className={`label-text ${content.header === 'ID' ? 'hidden' : ''}`}>
+                            {content.header}
+                            </span>
                           </label>
                           <input
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
