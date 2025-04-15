@@ -35,7 +35,7 @@ import ModalEditProps from "../types/ModalEditType";
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
                             name={content.acessor}
-                            defaultValue={model[content.acessor]()}
+                            defaultValue={model ? model[content.acessor]() : ''}
                           />
                         </div>
                       ))

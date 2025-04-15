@@ -4,6 +4,7 @@ import axios from "axios";
 import Table from "../components/Table";
 import Column from "../types/ColumnType";
 import { useLocation } from "react-router-dom";
+import Toast from "../components/Toast";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +30,6 @@ const Pessoas = ()=> {
         const url = import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl  + (search != null ? '&search='+search : '');
         await axios.get(url)
             .then(response => {
-                console.log(response)
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
                 }
@@ -55,7 +55,6 @@ const Pessoas = ()=> {
         })
     }
     const onSearch = (searchProp: string) => {
-        console.log('chegou?')
         setSearch(searchProp);
     }
 
@@ -70,15 +69,13 @@ const Pessoas = ()=> {
 
     if (isLoading)
         return <p>Carregando</p>;
-    if (erro != null){
+    
+    if (erro){
         return (
-        <>
-            <div className="toast">
-                <div className="alert alert-warning">
-                <span>{`Erro na requisição: ${erro}`}</span>
-                </div>
-            </div>
-        </>
+            <Toast
+                message={`Erro na requisição: ${erro}`}
+                type ={'warning'}
+            />
         )
     }
 

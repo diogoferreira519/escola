@@ -112,9 +112,15 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                     </div>
                 </div>
                 <div className="flex justify-end">
-                    <button className="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500">
-                    Cadastrar
-                    </button>
+
+                    <ModalEdit<ModelPessoa>
+                                        classButton="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500"
+                                        idButton={`modal_insert`}
+                                        contentButton={<span> Cadastrar</span>}
+                                        contentModal={columns}
+                                        title="Cadastrar Pessoa"
+                                        onConfirm={(updatedModel)=> handleEdit(updatedModel)}
+                    />
                 </div>
             </div>
         </div>

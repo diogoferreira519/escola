@@ -7,7 +7,7 @@ type ModalEditProps<T> = {
     contentButton: ReactNode;
     contentModal:  Column<T>[];
     title: string;
-    model: T;
+    model?: T;
     onConfirm: (form: any) => void;
 };
 export default ModalEditProps;
