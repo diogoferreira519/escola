@@ -8,6 +8,6 @@ type ModalEditProps<T> = {
     contentModal:  Column<T>[];
     title: string;
     model: T;
-    onConfirm: (form: any) => void;
+    onConfirm: (form: T) => void;
 };
 export default ModalEditProps;

@@ -4,7 +4,6 @@ import { MdDelete } from "react-icons/md";
 import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
-import ModelPessoa from "../models/ModelPessoa";
 import ModalEdit from "./ModalEdit";
 
 const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete, onSearch}: TableProps<T>) => {
@@ -35,11 +34,13 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
     }
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-        onEditOrDelete(id, false, null);
+        if (id)
+            onEditOrDelete(id, false, null);
       };
     
-    const handleEdit = () => (e: React.MouseEvent<HTMLButtonElement>) => {
-        // onEditOrDelete(model.getId(), true, model);
+    const handleEdit = (data: any) => {
+        if (data)
+            onEditOrDelete(data.getId, true, data);
     };
     
     return(
@@ -62,7 +63,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                     </thead>
                     <tbody>
                     {
-                        data.map((item: ModelPessoa, index) => {
+                        data.map((item: T, index) => {
                             return (
                                 <tr key={index}>
                                     {columns.map((column, indexColumn) => (
@@ -72,14 +73,14 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                     ))}
 
                                     <td className="flex gap-2">
-                                    <ModalEdit<ModelPessoa>
+                                    <ModalEdit<T>
                                         classButton="btn btn-outline p-3 btn-warning"
                                         idButton={`modal_edit_${item.getId()}`}
                                         contentButton={<GoPencil />}
                                         contentModal={columns}
                                         title="Editar item"
                                         model={item}
-                                        onConfirm={(updatedModel)=> handleEdit(updatedModel)}
+                                        onConfirm={handleEdit}
                                     />
                                     <Modal
                                         classButton="btn btn-outline p-3 btn-error"
@@ -100,7 +101,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
             </div>
             <div className="flex items-center justify-between mt-4 flex-wrap">
                 <div className="mb-2 md:mb-0"> 
-                    <span className="text-sm">Total Registros: {Number(totalRegistros)}</span>
+                    <span className="text-sm">Total Registros: {totalRegistros != undefined ? Number(totalRegistros) : 0}</span>
                 </div>
                 <div className="flex-1 flex justify-center mb-2 md:mb-0"> 
                     <div className="join">

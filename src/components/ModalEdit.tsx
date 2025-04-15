@@ -6,13 +6,20 @@ import ModalEditProps from "../types/ModalEditType";
     contentButton,
     contentModal,
     title,
-    id,
     model,
     onConfirm,
   }: ModalEditProps<T>) => {
 
     const handleConfirm = () => {
-      onConfirm(id);
+      const dialog = document.getElementById(idButton) as HTMLDialogElement;
+      const inputs = dialog.querySelectorAll<HTMLInputElement>('input');
+    
+      const data: Record<string, string> = {};
+      inputs.forEach(input => {
+        data[input.name] = input.value;
+      });
+
+      onConfirm(data as T);
     };
 
     return(
@@ -31,6 +38,14 @@ import ModalEditProps from "../types/ModalEditType";
                             {content.header}
                             </span>
                           </label>
+                          {content.isEnum &&
+                             <select defaultValue="Pick a color" className="select">
+                             <option disabled={true}>Selecione uma opção</option>
+                             <option>Crimson</option>
+                             <option>Amber</option>
+                             <option>Velvet</option>
+                           </select>
+                           }
                           <input
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
