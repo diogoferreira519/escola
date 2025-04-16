@@ -1,6 +1,6 @@
 import ModalEditProps from "../types/ModalEditType";
 
-  const ModalEdit = <T,>({
+  const ModalWithData = <T,>({
     classButton,
     idButton,
     contentButton,
@@ -38,20 +38,23 @@ import ModalEditProps from "../types/ModalEditType";
                             {content.header}
                             </span>
                           </label>
-                          {content.isEnum &&
-                             <select defaultValue="Pick a color" className="select">
-                             <option disabled={true}>Selecione uma opção</option>
-                             <option>Crimson</option>
-                             <option>Amber</option>
-                             <option>Velvet</option>
-                           </select>
-                           }
-                          <input
+                          {
+                            !content.isEnum &&
+                            <input
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
                             name={content.acessor}
-                            defaultValue={model[content.acessor]()}
+                            defaultValue={model ? model[content.acessor]() : ''}
                           />
+                           }
+                          {content.isEnum && content.enumType &&
+                            <select defaultValue={model ? model[content.acessor]() : 0} className="select">
+                             <option value={0} key={0}>Selecione uma opção</option>
+                             {Object.values(content.enumType).map((valor)=>(
+                              <option key={valor} value={valor}>{valor.charAt(0).toUpperCase() + valor.slice(1)}</option>
+                             ))}
+                           </select>
+                           }
                         </div>
                       ))
                 }
@@ -68,4 +71,4 @@ import ModalEditProps from "../types/ModalEditType";
         </>
     )
 }
-export default ModalEdit;
+export default ModalWithData;

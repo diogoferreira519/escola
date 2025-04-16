@@ -1,10 +1,12 @@
 import { MouseEventHandler, useEffect, useState } from "react";
-import ModelPessoa from "../models/ModelPessoa";
+import ModelPessoa from "../models/ModelPerson";
 import axios from "axios";
 import Table from "../components/Table";
 import Column from "../types/ColumnType";
 import { useLocation } from "react-router-dom";
 import { Role } from "../enums/Role";
+import Toast from "../components/Toast";
+import { activePerson } from "../enums/ActivePerson";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
@@ -96,32 +98,29 @@ const Pessoas = ()=> {
         return <p>Carregando</p>;
     if (erro != null){
         return (
-        <>
-            <div className="toast">
-                <div className="alert alert-warning">
-                <span>{`Erro na requisição: ${erro}`}</span>
-                </div>
-            </div>
-        </>
+            <Toast
+                message={`Erro na requisição: ${erro}`}
+                type ={'warning'}
+            />
         )
     }
 
     const colunas: Column<ModelPessoa>[] = [
         { header: "ID", acessor: 'getId' },
-        { header: "Nome", acessor: 'getNome' },
+        { header: "Nome", acessor: 'getNome', isKeyDescription: true},
         { header: "Email", acessor: 'getEmail' },
         { header: "CPF", acessor: 'getCpf' },
         { header: "Função", acessor: 'getRole', isEnum: true, enumType: Role },
-        { header: "Ativo", acessor: 'getAtivo',  isEnum: true },
+        { header: "Ativo", acessor: 'getAtivo', isEnum: true, enumType: activePerson},
       ];
 
     return (
         <>
             <Table data={data} 
                    columns={colunas} 
-                   totalRegistros={totalRegistros} 
-                   totalPaginas={totalPaginas} 
-                   changePaginaPai={changePagina}
+                   totalData={totalRegistros} 
+                   totalPages={totalPaginas} 
+                   changePageFather={changePagina}
                    onEditOrDelete={onEditOrDelete}
                    onSearch={onSearch}
             /> 

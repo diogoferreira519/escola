@@ -4,27 +4,27 @@ import { MdDelete } from "react-icons/md";
 import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
-import ModalEdit from "./ModalEdit";
+import ModalWithData from "./ModalWithData";
 
-const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai, onEditOrDelete, onSearch}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel}: TableProps<T>) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [search, setSearch] = useState<string>();
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
-        if (acao === actionPage.avanca && currentPage + 1 <= totalPaginas) {
+        if (acao === actionPage.avanca && currentPage + 1 <= totalPages) {
             novaPagina = currentPage + 1;
         } else if (acao === actionPage.retrocede && currentPage !== 1) {
             novaPagina = currentPage - 1;
         } else if (acao === actionPage.primeira) {
             novaPagina = 1;
         } else if (acao === actionPage.ultima) {
-            novaPagina = totalPaginas;
+            novaPagina = totalPages;
         }
 
         setCurrentPage(novaPagina);
-        changePaginaPai(String(novaPagina));
+        changePageFather(String(novaPagina));
     }
 
     const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,13 +35,27 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
         if (id)
-            onEditOrDelete(id, false, null);
+            onChangeDataModel(id, null, false, true);
       };
     
     const handleEdit = (data: any) => {
         if (data)
-            onEditOrDelete(data.getId, true, data);
+            onChangeDataModel(data.getId,data, true);
     };
+
+    const handleInsert = (data: any) => {
+        if (data)
+            onChangeDataModel(null, data);
+    }
+
+    const getDinamicDescription = (item: T) => {
+        const descricaoColuna = columns.find(column => column.keyDescription);
+        if (descricaoColuna) {
+            return item[descricaoColuna.acessor](); // Acessa o valor dinâmico do item
+        }
+        return null; // Se não encontrar, pode retornar um valor padrão
+    };
+
     
     return(
         <div>
@@ -73,7 +87,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                     ))}
 
                                     <td className="flex gap-2">
-                                    <ModalEdit<T>
+                                    <ModalWithData<T>
                                         classButton="btn btn-outline p-3 btn-warning"
                                         idButton={`modal_edit_${item.getId()}`}
                                         contentButton={<GoPencil />}
@@ -86,7 +100,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                                         classButton="btn btn-outline p-3 btn-error"
                                         idButton={`modal_delete_${item.getId()}`}
                                         contentButton={<MdDelete />}
-                                        contentModal={<p>Deseja excluir <strong>{item.getNome()}</strong>?</p>}
+                                        contentModal={<p>Deseja excluir <strong>{getDinamicDescription(item)}</strong>?</p>}
                                         title="Excluir item"
                                         id= {item.getId()}
                                         onConfirm={(id)=> handleDelete(id)}
@@ -101,7 +115,7 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
             </div>
             <div className="flex items-center justify-between mt-4 flex-wrap">
                 <div className="mb-2 md:mb-0"> 
-                    <span className="text-sm">Total Registros: {totalRegistros != undefined ? Number(totalRegistros) : 0}</span>
+                    <span className="text-sm">Total Registros: {totalData != undefined ? Number(totalData) : 0}</span>
                 </div>
                 <div className="flex-1 flex justify-center mb-2 md:mb-0"> 
                     <div className="join">
@@ -113,9 +127,14 @@ const Table = <T,>({data, columns, totalRegistros, totalPaginas, changePaginaPai
                     </div>
                 </div>
                 <div className="flex justify-end">
-                    <button className="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500">
-                    Cadastrar
-                    </button>
+                <ModalWithData<T>
+                    classButton="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500"
+                    idButton={`modal_insert`}
+                    contentButton={<span> Cadastrar</span>}
+                    contentModal={columns}
+                    title="Cadastro"
+                    onConfirm={(newModel)=> handleInsert(newModel)}
+                />
                 </div>
             </div>
         </div>
