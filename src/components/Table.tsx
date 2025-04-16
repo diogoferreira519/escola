@@ -48,14 +48,14 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
             onChangeDataModel(null, data);
     }
 
-    const getDinamicDescription = (item: T) => {
+    const getDinamicDescription = () => {
         const descricaoColuna = columns.find(column => column.keyDescription);
+        console.log(descricaoColuna)
         if (descricaoColuna) {
-            return item[descricaoColuna.acessor](); // Acessa o valor dinâmico do item
+            return descricaoColuna.acessor;
         }
-        return null; // Se não encontrar, pode retornar um valor padrão
+        return null; 
     };
-
     
     return(
         <div>
@@ -100,7 +100,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                         classButton="btn btn-outline p-3 btn-error"
                                         idButton={`modal_delete_${item.getId()}`}
                                         contentButton={<MdDelete />}
-                                        contentModal={<p>Deseja excluir <strong>{getDinamicDescription(item)}</strong>?</p>}
+                                        contentModal={<p>Deseja excluir <strong>{getDinamicDescription()}</strong>?</p>}
                                         title="Excluir item"
                                         id= {item.getId()}
                                         onConfirm={(id)=> handleDelete(id)}
@@ -113,29 +113,45 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                     </tbody>
                 </table>
             </div>
-            <div className="flex items-center justify-between mt-4 flex-wrap">
-                <div className="mb-2 md:mb-0"> 
-                    <span className="text-sm">Total Registros: {totalData != undefined ? Number(totalData) : 0}</span>
-                </div>
-                <div className="flex-1 flex justify-center mb-2 md:mb-0"> 
-                    <div className="join">
-                        <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<<'}</button>
-                        <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<'}</button>
-                        <button className="join-item btn btn-xs sm:btn-sm md:btn-md">{currentPage}</button>
-                        <button onClick={()=> changePage(actionPage.avanca)}className="join-item btn btn-xs sm:btn-sm md:btn-md" >{'>'}</button>
-                        <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'>>'}</button>
+            <div className="flex items-center mt-4 flex-wrap">
+                <div className="flex flex-col lg:flex-row md:flex-row rounded-md">
+                    <div className="flex flex-col md:flex-row gap-2 lg:items-center md:items-center">
+                        <div className="flex items-center justify-start mb-2 md:mb-0"> 
+                            <span className="text-sm whitespace-normal break-words">Total: {totalData != undefined ? Number(totalData) : 0}</span>
+                            <span className="pl-2 hidden sm:block">|</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <label className="label">
+                                <span className="text-sm">Paginação:</span>
+                            </label>
+                            <select id="itemsPerPage" className="select select-bordered w-16 h-7 md:w-18 md:h-8">
+                                <option selected>10</option>
+                                <option>20</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className="flex justify-end">
-                <ModalWithData<T>
-                    classButton="btn btn-sm md:btn-md bg-blue-700 hover:bg-blue-500"
-                    idButton={`modal_insert`}
-                    contentButton={<span> Cadastrar</span>}
-                    contentModal={columns}
-                    title="Cadastro"
-                    onConfirm={(newModel)=> handleInsert(newModel)}
-                />
-                </div>
+                    <div className="absolute left-1/2 transform -translate-x-1/2 mb-2 md:mb-0"> 
+                        <div className="join">
+                            <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<<'}</button>
+                            <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<'}</button>
+                            <button disabled className="text-amber-50 join-item btn btn-xs sm:btn-sm md:btn-md">{currentPage}</button>
+                            <button onClick={()=> changePage(actionPage.avanca)} className="join-item btn btn-xs sm:btn-sm md:btn-md" >{'>'}</button>
+                            <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'>>'}</button>
+                        </div>
+                    </div>
+                        <div className="absolute right-1/12">
+                            <ModalWithData<T>
+                                classButton="btn btn-xs sm:btn-sm md:btn-md bg-blue-700 hover:bg-blue-500"
+                                idButton={`modal_insert`}
+                                contentButton={<span> Cadastrar</span>}
+                                contentModal={columns}
+                                title="Cadastro"
+                                onConfirm={(newModel)=> handleInsert(newModel)}
+                            />
+                        </div>
+                    </div>
             </div>
         </div>
 )}

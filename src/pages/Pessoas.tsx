@@ -111,7 +111,7 @@ const Pessoas = ()=> {
         { header: "Email", acessor: 'getEmail' },
         { header: "CPF", acessor: 'getCpf' },
         { header: "Função", acessor: 'getRole', isEnum: true, enumType: Role },
-        { header: "Ativo", acessor: 'getAtivo', isEnum: true, enumType: activePerson},
+        { header: "Ativo", acessor: 'getAtivo', isBoolean: true},
       ];
 
     return (

@@ -39,13 +39,17 @@ import ModalEditProps from "../types/ModalEditType";
                             </span>
                           </label>
                           {
-                            !content.isEnum &&
+                            !content.isEnum && !content.isBoolean &&
                             <input
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
                             name={content.acessor}
                             defaultValue={model ? model[content.acessor]() : ''}
                           />
+                           }
+                           {
+                            content.isBoolean &&
+                            <input type="checkbox" defaultValue={model ? model[content.acessor]()=='sim' : 0} className="toggle toggle-info" />
                            }
                           {content.isEnum && content.enumType &&
                             <select defaultValue={model ? model[content.acessor]() : 0} className="select">

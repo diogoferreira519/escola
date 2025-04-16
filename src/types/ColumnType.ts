@@ -1,9 +1,11 @@
 type Column<T> = {
     header: string,
     acessor: keyof T;
-    isEnum?:true;
+    isEnum?:boolean;
+    isBoolean?:boolean;
     isKeyDescription?: boolean;
-    enumType?: Record<string, string>; 
+    enumType?: Record<string, string>;
+     
 }
 
 export default Column;
