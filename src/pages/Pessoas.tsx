@@ -6,13 +6,13 @@ import Column from "../types/ColumnType";
 import { useLocation } from "react-router-dom";
 import { Role } from "../enums/Role";
 import Toast from "../components/Toast";
-import { activePerson } from "../enums/ActivePerson";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
     const [data, setData] = useState<ModelPessoa[]>([]);
     const [search, setSearch] = useState<string>();
+    const [itemsPage, setItemsPage] = useState<number>(10);
     const [totalRegistros, setTotalRegistros] = useState<number>(1);
     const [totalPaginas, setTotalPaginas] = useState<number>(1);
     const location = useLocation();
@@ -21,7 +21,7 @@ const Pessoas = ()=> {
     useEffect(() => {
         getData();
         setIsLoading(false);
-    }, [pageUrl, search]);
+    }, [pageUrl, search, itemsPage]);
 
     const changePagina = (pagina: string) => {
         setPageUrl(pagina);
@@ -29,7 +29,7 @@ const Pessoas = ()=> {
     }
 
     const getData = async ()=>{
-        const url = import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl  + (search != null ? '&search='+search : '');
+        const url = import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl  + (search != null ? '&search='+search : '') + '&items=' +itemsPage;
         await axios.get(url)
             .then(response => {
                 if (!response.status){
@@ -50,7 +50,7 @@ const Pessoas = ()=> {
                     }));
                 }
                 setTotalRegistros(response.data.count);
-                setTotalPaginas(Math.ceil(response.data.count/10));
+                setTotalPaginas(Math.ceil(response.data.count/itemsPage));
             })
             .catch(err => {
                 setErro(err.message);
@@ -83,6 +83,10 @@ const Pessoas = ()=> {
 
     const onSearch = (searchProp: string) => {
         setSearch(searchProp);
+    }
+
+    const onChangeItemsPage = (page: number) => {
+        setItemsPage(page);
     }
 
     const onEditOrDelete = (id: number, editar: boolean, formEdit: any | null): MouseEventHandler<HTMLButtonElement> => {
@@ -123,6 +127,7 @@ const Pessoas = ()=> {
                    changePageFather={changePagina}
                    onEditOrDelete={onEditOrDelete}
                    onSearch={onSearch}
+                   onChangeItemsPage={onChangeItemsPage}
             /> 
         </>
     )

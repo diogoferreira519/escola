@@ -49,7 +49,7 @@ import ModalEditProps from "../types/ModalEditType";
                            }
                            {
                             content.isBoolean &&
-                            <input type="checkbox" defaultValue={model ? model[content.acessor]()=='sim' : 0} className="toggle toggle-info" />
+                            <input type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
                            }
                           {content.isEnum && content.enumType &&
                             <select defaultValue={model ? model[content.acessor]() : 0} className="select">

@@ -6,10 +6,11 @@ import TableProps from "../types/TableProps";
 import Modal from "./Modal";
 import ModalWithData from "./ModalWithData";
 
-const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel, onChangeItemsPage}: TableProps<T>) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [search, setSearch] = useState<string>();
+    const [itemsPage, setItemsPage] = useState<number>();
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
@@ -25,6 +26,10 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
 
         setCurrentPage(novaPagina);
         changePageFather(String(novaPagina));
+    }
+
+    const changeItemsPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        onChangeItemsPage(Number(e.target.value))
     }
 
     const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,8 +54,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
     }
 
     const getDinamicDescription = () => {
-        const descricaoColuna = columns.find(column => column.keyDescription);
-        console.log(descricaoColuna)
+        const descricaoColuna = columns.find(column => column.isKeyDescription);
         if (descricaoColuna) {
             return descricaoColuna.acessor;
         }
@@ -100,7 +104,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                         classButton="btn btn-outline p-3 btn-error"
                                         idButton={`modal_delete_${item.getId()}`}
                                         contentButton={<MdDelete />}
-                                        contentModal={<p>Deseja excluir <strong>{getDinamicDescription()}</strong>?</p>}
+                                        contentModal={<p>Deseja excluir <strong>{item[getDinamicDescription()]()}</strong>?</p>}
                                         title="Excluir item"
                                         id= {item.getId()}
                                         onConfirm={(id)=> handleDelete(id)}
@@ -124,11 +128,15 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                             <label className="label">
                                 <span className="text-sm">Paginação:</span>
                             </label>
-                            <select id="itemsPerPage" className="select select-bordered w-16 h-7 md:w-18 md:h-8">
-                                <option selected>10</option>
-                                <option>20</option>
-                                <option>50</option>
-                                <option>100</option>
+                            <select 
+                                id="itemsPerPage" 
+                                className="select select-bordered w-16 h-7 md:w-18 md:h-8" 
+                                value={itemsPage} 
+                                onChange={changeItemsPage}>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
                             </select>
                         </div>
                     </div>
