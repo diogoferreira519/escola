@@ -26,7 +26,7 @@ import ModalEditProps from "../types/ModalEditType";
         <>
         <div>
         <button className={classButton} onClick={() => (document.getElementById(idButton) as HTMLDialogElement)?.showModal()}>{contentButton}</button>
-        <dialog id={idButton} className="modal modal-bottom sm:modal-middle">
+        <dialog id={idButton} className="modal modal-middle">
         <div className="modal-box">
             <h3 className="font-bold text-lg">{title}</h3>
             <div className="py-4">

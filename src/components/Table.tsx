@@ -5,25 +5,27 @@ import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
 import ModalWithData from "./ModalWithData";
+import { FaSortDown, FaSortUp } from "react-icons/fa";
 
-const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel, onChangeItemsPage}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel, onChangeItemsPage, setAscColumn}: TableProps<T>) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [search, setSearch] = useState<string>();
-    const [itemsPage, setItemsPage] = useState<number>();
+    const [isAscOrder, setIsAscOrder] = useState<boolean>(true);
+    const [columnSorter, setColumnSorter] = useState<string | null>('id');
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
-        if (acao === actionPage.avanca && currentPage + 1 <= totalPages) {
+        
+        if (acao === actionPage.avanca && currentPage + 1 <= totalPages) 
             novaPagina = currentPage + 1;
-        } else if (acao === actionPage.retrocede && currentPage !== 1) {
+        else if (acao === actionPage.retrocede && currentPage !== 1) 
             novaPagina = currentPage - 1;
-        } else if (acao === actionPage.primeira) {
+        else if (acao === actionPage.primeira) 
             novaPagina = 1;
-        } else if (acao === actionPage.ultima) {
+        else if (acao === actionPage.ultima) 
             novaPagina = totalPages;
-        }
-
+        
         setCurrentPage(novaPagina);
         changePageFather(String(novaPagina));
     }
@@ -53,6 +55,18 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
             onChangeDataModel(null, data);
     }
 
+    const handleSortColumn = (propertie: string) => {
+        if (propertie == columnSorter){
+            const novaOrdem = !isAscOrder;
+            setIsAscOrder(novaOrdem);
+            setAscColumn(propertie, novaOrdem); 
+        }else{
+            setColumnSorter(propertie);
+            setIsAscOrder(true);
+            setAscColumn(propertie, true);
+        }
+    }
+
     const getDinamicDescription = () => {
         const descricaoColuna = columns.find(column => column.isKeyDescription);
         if (descricaoColuna) {
@@ -74,7 +88,13 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                     <thead>
                         <tr>
                             {columns.map((column, index)=>(
-                                <th key={index}>{column.header}</th>
+                                <th className="cursor-pointer" key={index}>
+                                    <span className="flex items-center gap-2" onClick={()=>handleSortColumn(column.propertie)}>
+                                        {column.header} {columnSorter === column.propertie
+                                        ? (isAscOrder ? <FaSortUp /> : <FaSortDown />)
+                                        : <FaSortDown className="opacity-30" />}
+                                    </span>
+                                </th>
                             ))}                   
                             <th className="w-3">Ações</th>
                         </tr>
@@ -131,7 +151,6 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                             <select 
                                 id="itemsPerPage" 
                                 className="select select-bordered w-16 h-7 md:w-18 md:h-8" 
-                                value={itemsPage} 
                                 onChange={changeItemsPage}>
                                 <option value={10}>10</option>
                                 <option value={20}>20</option>

@@ -10,5 +10,6 @@ type TableProps<T> = {
     onChangeDataModel: (id: number | null, Model: T | null, isEdit?: boolean, isDelete?:boolean)=> MouseEventHandler<HTMLButtonElement>;
     onSearch: (search: string)=> void;
     onChangeItemsPage: (items: number)=>void;
+    setAscColumn: (column: string, isAsc: boolean) => void;
 }
 export default TableProps;

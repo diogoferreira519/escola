@@ -5,7 +5,8 @@ import Table from "../components/Table";
 import Column from "../types/ColumnType";
 import { useLocation } from "react-router-dom";
 import { Role } from "../enums/Role";
-import Toast from "../components/Toast";
+import { toast } from "react-toastify";
+import ColumnOrder from "../interfaces/ColumnOrder";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
@@ -15,13 +16,14 @@ const Pessoas = ()=> {
     const [itemsPage, setItemsPage] = useState<number>(10);
     const [totalRegistros, setTotalRegistros] = useState<number>(1);
     const [totalPaginas, setTotalPaginas] = useState<number>(1);
+    const [columnOrder, setColumnOrder] = useState<ColumnOrder[]>([{column: 'id', asc: true}]);
     const location = useLocation();
     const [pageUrl, setPageUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
 
     useEffect(() => {
         getData();
         setIsLoading(false);
-    }, [pageUrl, search, itemsPage]);
+    }, [pageUrl, search, itemsPage, columnOrder]);
 
     const changePagina = (pagina: string) => {
         setPageUrl(pagina);
@@ -29,32 +31,37 @@ const Pessoas = ()=> {
     }
 
     const getData = async ()=>{
-        const url = import.meta.env.VITE_API_URL + '/pessoas?page=' + pageUrl  + (search != null ? '&search='+search : '') + '&items=' +itemsPage;
-        await axios.get(url)
-            .then(response => {
-                if (!response.status){
+        await axios.get(import.meta.env.VITE_API_URL + '/pessoas', {
+            params: {
+                page: pageUrl,
+                search: search,
+                items: itemsPage,
+                order: columnOrder
+            }
+        }).then(response => {
+            if (!response.status)
                 throw new Error(`Erro na requisição ${response.status}`);
-                }
-                if (response.data?.rows){
-                    setData(response.data.rows.map((item: any)=> {
-                        return new ModelPessoa(item.id, item.nome, item.email, 
-                                        item.cpf, item.ativo, item.role, 
-                                        item.updatedAt, item.createdAt);
-                    }));
-                }
-                else if(response.data){
-                    setData(response.data.map((item: any)=> {
-                        return new ModelPessoa(item.id, item.nome, item.email, 
-                                        item.cpf, item.ativo, item.role, 
-                                        item.updatedAt, item.createdAt);
-                    }));
-                }
-                setTotalRegistros(response.data.count);
-                setTotalPaginas(Math.ceil(response.data.count/itemsPage));
-            })
-            .catch(err => {
-                setErro(err.message);
-        })
+            
+            if (response.data?.rows){
+                setData(response.data.rows.map((item: any)=> {
+                    return new ModelPessoa(item.id, item.nome, item.email, 
+                                    item.cpf, item.ativo, item.role, 
+                                    item.updatedAt, item.createdAt);
+                }));
+                setTotalRegistros(response.data.count ?? response.data.length);
+            }
+            else if(response.data){
+                setData(response.data.map((item: any)=> {
+                    return new ModelPessoa(item.id, item.nome, item.email, 
+                                    item.cpf, item.ativo, item.role, 
+                                    item.updatedAt, item.createdAt);
+                }));
+                setTotalRegistros(response.data.count ?? response.data.length);
+            }
+            setTotalPaginas(Math.ceil(response.data.count/itemsPage));
+        }).catch(err => {
+            setErro(err.message);
+        });
     }
 
     const putData = async (data:any)=>{
@@ -90,32 +97,29 @@ const Pessoas = ()=> {
     }
 
     const onEditOrDelete = (id: number, editar: boolean, formEdit: any | null): MouseEventHandler<HTMLButtonElement> => {
-        if (editar && formEdit) {
+        if (editar && formEdit) 
             putData(formEdit);
-        }
-        else{
+        else
             console.log('excluir')
-        }
+    }
+
+    const setAscColumn = (column: string, isAsc: boolean) => {
+        setColumnOrder([{column: column, asc: isAsc}]);
     }
 
     if (isLoading)
         return <p>Carregando</p>;
-    if (erro != null){
-        return (
-            <Toast
-                message={`Erro na requisição: ${erro}`}
-                type ={'warning'}
-            />
-        )
-    }
+    
+    if (erro != null)
+        toast.error(erro);
 
     const colunas: Column<ModelPessoa>[] = [
-        { header: "ID", acessor: 'getId' },
-        { header: "Nome", acessor: 'getNome', isKeyDescription: true},
-        { header: "Email", acessor: 'getEmail' },
-        { header: "CPF", acessor: 'getCpf' },
-        { header: "Função", acessor: 'getRole', isEnum: true, enumType: Role },
-        { header: "Ativo", acessor: 'getAtivo', isBoolean: true},
+        { header: "ID", acessor: 'getId', propertie: 'id' },
+        { header: "Nome", acessor: 'getNome', isKeyDescription: true, propertie: 'nome'},
+        { header: "Email", acessor: 'getEmail', propertie: 'email'},
+        { header: "CPF", acessor: 'getCpf', propertie: 'cpf'},
+        { header: "Função", acessor: 'getRole', isEnum: true, enumType: Role, propertie: 'role' },
+        { header: "Ativo", acessor: 'getAtivo', isBoolean: true, propertie: 'ativo'},
       ];
 
     return (
@@ -128,6 +132,7 @@ const Pessoas = ()=> {
                    onEditOrDelete={onEditOrDelete}
                    onSearch={onSearch}
                    onChangeItemsPage={onChangeItemsPage}
+                   setAscColumn={setAscColumn}
             /> 
         </>
     )
