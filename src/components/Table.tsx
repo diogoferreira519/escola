@@ -16,7 +16,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
-        
+
         if (acao === actionPage.avanca && currentPage + 1 <= totalPages) 
             novaPagina = currentPage + 1;
         else if (acao === actionPage.retrocede && currentPage !== 1) 
@@ -46,8 +46,9 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
       };
     
     const handleEdit = (data: any) => {
-        if (data)
+        if (data){
             onChangeDataModel(data.getId,data, true);
+        }
     };
 
     const handleInsert = (data: any) => {

@@ -65,6 +65,7 @@ const Pessoas = ()=> {
     }
 
     const putData = async (data:any)=>{
+        console.log(data);
         const body = {
             nome: data.getNome,
             email: data.getEmail,
