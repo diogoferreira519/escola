@@ -7,7 +7,7 @@ type TableProps<T> = {
     totalData: number;
     totalPages: number;
     changePageFather: (page: string)=>void;
-    onChangeDataModel: (id: number | null, Model: T | null, isEdit?: boolean, isDelete?:boolean)=> MouseEventHandler<HTMLButtonElement>;
+    onChangeDataModal: (id: number | null, Model?: T | null)=> void;
     onSearch: (search: string)=> void;
     onChangeItemsPage: (items: number)=>void;
     setAscColumn: (column: string, isAsc: boolean) => void;

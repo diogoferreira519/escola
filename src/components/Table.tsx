@@ -7,7 +7,7 @@ import Modal from "./Modal";
 import ModalWithData from "./ModalWithData";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
 
-const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModel, onChangeItemsPage, setAscColumn}: TableProps<T>) => {
+const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModal, onChangeItemsPage, setAscColumn}: TableProps<T>) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [search, setSearch] = useState<string>();
@@ -42,18 +42,18 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
         if (id)
-            onChangeDataModel(id, null, false, true);
+            onChangeDataModal(id);
       };
     
-    const handleEdit = (data: any) => {
+    const handleEdit = (data: T) => {
         if (data){
-            onChangeDataModel(data.getId,data, true);
+            onChangeDataModal(data.getId,data);
         }
     };
 
-    const handleInsert = (data: any) => {
+    const handleInsert = (data: T) => {
         if (data)
-            onChangeDataModel(null, data);
+            onChangeDataModal(null, data);
     }
 
     const handleSortColumn = (propertie: string) => {
@@ -119,7 +119,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                         contentModal={columns}
                                         title="Editar item"
                                         model={item}
-                                        onConfirm={handleEdit}
+                                        onConfirm={(data)=> handleEdit(data)}
                                     />
                                     <Modal
                                         classButton="btn btn-outline p-3 btn-error"

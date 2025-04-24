@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ModelPessoa from "../models/ModelPerson";
 import axios from "axios";
 import Table from "../components/Table";
@@ -19,6 +19,7 @@ const Pessoas = ()=> {
     const [columnOrder, setColumnOrder] = useState<ColumnOrder[]>([{column: 'id', asc: true}]);
     const location = useLocation();
     const [pageUrl, setPageUrl] = useState<string | null>(new URLSearchParams(location.search).get("page"));
+    const url = import.meta.env.VITE_API_URL + '/pessoas';
 
     useEffect(() => {
         getData();
@@ -31,7 +32,7 @@ const Pessoas = ()=> {
     }
 
     const getData = async ()=>{
-        await axios.get(import.meta.env.VITE_API_URL + '/pessoas', {
+        await axios.get(url, {
             params: {
                 page: pageUrl,
                 search: search,
@@ -64,7 +65,11 @@ const Pessoas = ()=> {
         });
     }
 
-    const putData = async (data:any)=>{
+    const insertData = async (data: T)=>{
+
+    }
+
+    const putData = async (data:T)=>{
         console.log(data);
         const body = {
             nome: data.getNome,
@@ -76,7 +81,7 @@ const Pessoas = ()=> {
 
         console.log(body);
 
-        const url = import.meta.env.VITE_API_URL + '/pessoas/' + data.getId;
+        const urlPut = import.meta.env.VITE_API_URL + '/pessoas/' + data.getId;
         await axios.put(url, body)
             .then(response => {
                 if (!response.status){
@@ -89,6 +94,10 @@ const Pessoas = ()=> {
         })
     }
 
+    const deleteData = async(id: Number) =>{
+
+    }
+
     const onSearch = (searchProp: string) => {
         setSearch(searchProp);
     }
@@ -97,11 +106,13 @@ const Pessoas = ()=> {
         setItemsPage(page);
     }
 
-    const onEditOrDelete = (id: number, editar: boolean, formEdit: any | null): MouseEventHandler<HTMLButtonElement> => {
-        if (editar && formEdit) 
-            putData(formEdit);
-        else
-            console.log('excluir')
+    const onChangeDataModal = (id: number | null, Model: T | null): void => {
+        if (id && Model) 
+            putData(Model);
+        else if (!id && Model)
+            insertData(Model);
+        else if (id && !Model)
+            deleteData(id);
     }
 
     const setAscColumn = (column: string, isAsc: boolean) => {
@@ -130,7 +141,7 @@ const Pessoas = ()=> {
                    totalData={totalRegistros} 
                    totalPages={totalPaginas} 
                    changePageFather={changePagina}
-                   onEditOrDelete={onEditOrDelete}
+                   onChangeDataModal={onChangeDataModal}
                    onSearch={onSearch}
                    onChangeItemsPage={onChangeItemsPage}
                    setAscColumn={setAscColumn}
