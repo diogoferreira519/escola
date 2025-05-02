@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ModelPessoa from "../models/ModelPerson";
+import ModelPessoa from "../models/ModelPessoa";
 import axios from "axios";
 import Table from "../components/Table";
 import Column from "../types/ColumnType";
@@ -25,6 +25,11 @@ const Pessoas = ()=> {
         getData();
         setIsLoading(false);
     }, [pageUrl, search, itemsPage, columnOrder]);
+
+    useEffect(() => {
+        if (erro != null)
+          toast.error(erro);
+      }, [erro]);
 
     const changePagina = (pagina: string) => {
         setPageUrl(pagina);
@@ -66,25 +71,21 @@ const Pessoas = ()=> {
     }
 
     const insertData = async (data: T)=>{
-
-    }
-
-    const putData = async (data:T)=>{
         const body = {
-            nome: data.getNome,
-            email: data.getEmail,
-            cpf: data.getCpf,
-            ativo: data.getAtivo ? 1 : 0,
-            role: data.getRole
+            nome: data.nome,
+            email: data.email,
+            cpf: data.cpf,
+            ativo: data.ativo ? 1 : 0,
+            role: data.role
         };
+        console.log(body);
 
-        const urlPut = import.meta.env.VITE_API_URL + '/pessoas/' + data.getId;
-        console.log(urlPut)
-        await axios.put(urlPut, body)
+        const urlInsert = import.meta.env.VITE_API_URL + '/pessoas/';
+        await axios.post(urlInsert, body)
             .then(response => {
-                if (!response.status){
-                throw new Error(`Erro na requisição ${response.status}`);
-                }
+                if (!response.status)
+                    throw new Error(`Erro na requisição ${response.status}`);
+                
                 getData()
             })
             .catch(err => {
@@ -92,8 +93,40 @@ const Pessoas = ()=> {
         })
     }
 
-    const deleteData = async(id: Number) =>{
+    const putData = async (data: T)=> {
+        const body = {
+            nome: data.nome,
+            email: data.email,
+            cpf: data.cpf,
+            ativo: data.isAtivo ? 1 : 0,
+            role: data.role
+        };
 
+        const urlPut = import.meta.env.VITE_API_URL + '/pessoas/' + data.id;
+        await axios.put(urlPut, body)
+            .then(response => {
+                if (!response.status)
+                    throw new Error(`Erro na requisição ${response.status}`);
+                
+                getData()
+            })
+            .catch(err => {
+                setErro(err.message);
+        })
+    }
+
+    const deleteData = async(id: number) =>{
+        const urlDelete = import.meta.env.VITE_API_URL + '/pessoas/' + id;
+        await axios.delete(urlDelete)
+            .then(response => {
+                if (!response.status)
+                    throw new Error(`Erro na requisição ${response.status}`);
+                
+                getData();
+            })
+            .catch(err => {
+                setErro(err.response?.data?.mensagem);
+            });
     }
 
     const onSearch = (searchProp: string) => {
@@ -109,8 +142,9 @@ const Pessoas = ()=> {
             putData(Model);
         else if (!id && Model)
             insertData(Model);
-        else if (id && !Model)
+        else if (id && !Model){
             deleteData(id);
+        }
     }
 
     const setAscColumn = (column: string, isAsc: boolean) => {
@@ -120,9 +154,6 @@ const Pessoas = ()=> {
     if (isLoading)
         return <p>Carregando</p>;
     
-    if (erro != null)
-        toast.error(erro);
-
     const colunas: Column<ModelPessoa>[] = [
         { header: "ID", acessor: 'getId', propertie: 'id' },
         { header: "Nome", acessor: 'getNome', isKeyDescription: true, propertie: 'nome'},

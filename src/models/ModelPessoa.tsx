@@ -1,12 +1,12 @@
 class ModelPessoa {
-  private id: number | undefined;
+  private id?: number;
   private nome: string;
   private email: string;
   private cpf: string;
   private ativo: boolean;
   private role: string;
-  private updatedAt: Date | undefined;
-  private createdAt: Date | undefined;
+  private updatedAt?: Date;
+  private createdAt?: Date;
 
     constructor(id: number, nome: string, email: string, 
                 cpf: string, ativo: boolean, role: string, 

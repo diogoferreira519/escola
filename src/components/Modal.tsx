@@ -6,13 +6,8 @@ import ModalProps from "../types/ModalType";
     contentButton,
     contentModal,
     title,
-    id,
     onConfirm,
   }: ModalProps) => {
-
-    const handleConfirm = () => {
-      onConfirm(id);
-    };
 
     return(
         <>
@@ -27,7 +22,7 @@ import ModalProps from "../types/ModalType";
             <div className="modal-action">
             <form method="dialog">
                 <button className="btn">Cancelar</button>
-                <button className="btn" onClick={handleConfirm}>Confirmar</button>
+                <button className="btn" onClick={onConfirm}>Confirmar</button>
             </form>
             </div>
         </div>

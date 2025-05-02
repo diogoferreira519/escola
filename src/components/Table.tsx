@@ -39,15 +39,14 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
         onSearch(event.target.value);
     }
 
-    const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleDelete = (id: number) => {
         if (id)
             onChangeDataModal(id);
       };
     
     const handleEdit = (data: T) => {
-        if (data){
-            onChangeDataModal(data.getId,data);
-        }
+        if (data)
+            onChangeDataModal(data.id,data);
     };
 
     const handleInsert = (data: T) => {
@@ -128,8 +127,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                         contentButton={<MdDelete />}
                                         contentModal={<p>Deseja excluir <strong>{item[getDinamicDescription()]()}</strong>?</p>}
                                         title="Excluir item"
-                                        id= {item.getId()}
-                                        onConfirm={(id)=> handleDelete(id)}
+                                        onConfirm={()=> handleDelete(item.getId())}
                                     />
                                     </td>
                                 </tr>

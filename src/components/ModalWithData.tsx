@@ -18,9 +18,8 @@ import ModalEditProps from "../types/ModalEditType";
       const data: Record<string, string | boolean> = {};
 
       inputs.forEach(input => {
-        if (input.type === 'checkbox'){
+        if (input.type === 'checkbox')
           data[input.name] = input.checked;
-        }
         else
           data[input.name] = input.value;
       });
@@ -53,16 +52,16 @@ import ModalEditProps from "../types/ModalEditType";
                             <input
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
-                            name={content.acessor}
+                            name={content.propertie}
                             defaultValue={model ? model[content.acessor]() : ''}
                           />
                            }
                            {
                             content.isBoolean &&
-                            <input name={content.acessor}type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
+                            <input name={content.propertie}type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
                            }
                           {content.isEnum && content.enumType &&
-                            <select name={content.acessor}defaultValue={model ? model[content.acessor]() : 0} className="select">
+                            <select name={content.propertie}defaultValue={model ? model[content.acessor]() : 0} className="select">
                              <option value={0} key={0}>Selecione uma opção</option>
                              {Object.values(content.enumType).map((valor)=>(
                               <option key={valor} value={valor}>{valor.charAt(0).toUpperCase() + valor.slice(1)}</option>

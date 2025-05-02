@@ -6,7 +6,6 @@ type ModalProps = {
     contentButton: string | ReactNode;
     contentModal: ReactNode;
     title: string;
-    id: number;
-    onConfirm: (id: number) => void;
+    onConfirm: () => void;
 };
 export default ModalProps;
