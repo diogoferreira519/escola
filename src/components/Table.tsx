@@ -35,9 +35,8 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
     }
 
     const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const valor = event.target.value;
-        setSearch(valor);
-        onSearch(valor);
+        setSearch(event.target.value);
+        onSearch(event.target.value);
     }
 
     const handleDelete = (id: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -107,7 +106,9 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                 <tr key={index}>
                                     {columns.map((column, indexColumn) => (
                                         <td key={indexColumn}>
-                                                    {item[column.acessor]()} 
+                                            {typeof(item[column.acessor]()) == "string" || typeof(item[column.acessor]()) == "number"  ? item[column.acessor]() : (
+                                                        item[column.acessor]() ? 'Sim' : 'Não'
+                                                    )}
                                         </td>
                                     ))}
 

@@ -70,19 +70,17 @@ const Pessoas = ()=> {
     }
 
     const putData = async (data:T)=>{
-        console.log(data);
         const body = {
             nome: data.getNome,
             email: data.getEmail,
             cpf: data.getCpf,
-            ativo: data.getAtivo,
+            ativo: data.getAtivo ? 1 : 0,
             role: data.getRole
         };
 
-        console.log(body);
-
         const urlPut = import.meta.env.VITE_API_URL + '/pessoas/' + data.getId;
-        await axios.put(url, body)
+        console.log(urlPut)
+        await axios.put(urlPut, body)
             .then(response => {
                 if (!response.status){
                 throw new Error(`Erro na requisição ${response.status}`);
@@ -131,7 +129,7 @@ const Pessoas = ()=> {
         { header: "Email", acessor: 'getEmail', propertie: 'email'},
         { header: "CPF", acessor: 'getCpf', propertie: 'cpf'},
         { header: "Função", acessor: 'getRole', isEnum: true, enumType: Role, propertie: 'role' },
-        { header: "Ativo", acessor: 'getAtivo', isBoolean: true, propertie: 'ativo'},
+        { header: "Ativo", acessor: 'isAtivo', isBoolean: true, propertie: 'ativo'},
       ];
 
     return (

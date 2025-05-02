@@ -13,10 +13,20 @@ import ModalEditProps from "../types/ModalEditType";
     const handleConfirm = () => {
       const dialog = document.getElementById(idButton) as HTMLDialogElement;
       const inputs = dialog.querySelectorAll<HTMLInputElement>('input');
+      const selects = dialog.querySelectorAll<HTMLSelectElement>('select');
     
-      const data: Record<string, string> = {};
+      const data: Record<string, string | boolean> = {};
+
       inputs.forEach(input => {
-        data[input.name] = input.value;
+        if (input.type === 'checkbox'){
+          data[input.name] = input.checked;
+        }
+        else
+          data[input.name] = input.value;
+      });
+
+      selects.forEach(select =>{
+        data[select.name] = select.value;
       });
 
       onConfirm(data as T);
@@ -49,10 +59,10 @@ import ModalEditProps from "../types/ModalEditType";
                            }
                            {
                             content.isBoolean &&
-                            <input type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
+                            <input name={content.acessor}type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
                            }
                           {content.isEnum && content.enumType &&
-                            <select defaultValue={model ? model[content.acessor]() : 0} className="select">
+                            <select name={content.acessor}defaultValue={model ? model[content.acessor]() : 0} className="select">
                              <option value={0} key={0}>Selecione uma opção</option>
                              {Object.values(content.enumType).map((valor)=>(
                               <option key={valor} value={valor}>{valor.charAt(0).toUpperCase() + valor.slice(1)}</option>
