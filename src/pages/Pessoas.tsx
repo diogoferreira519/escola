@@ -39,6 +39,7 @@ const Pessoas = ()=> {
                 order: columnOrder
             }
         }).then(response => {
+            console.log(response)
             if (!response.status)
                 throw new Error(`Erro na requisição ${response.status}`);
             
@@ -79,7 +80,7 @@ const Pessoas = ()=> {
         await axios.put(url, body)
             .then(response => {
                 if (!response.status){
-                throw new Error(`Erro na requisição ${response.status}`);
+                    throw new Error(`Erro na requisição ${response.status}`);
                 }
                 getData()
             })
@@ -96,7 +97,8 @@ const Pessoas = ()=> {
         setItemsPage(page);
     }
 
-    const onEditOrDelete = (id: number, editar: boolean, formEdit: any | null): MouseEventHandler<HTMLButtonElement> => {
+    const onEditOrDelete = (id: number, formEdit: any | null, editar: boolean,): 
+    MouseEventHandler<HTMLButtonElement> => {
         if (editar && formEdit) 
             putData(formEdit);
         else
@@ -129,7 +131,7 @@ const Pessoas = ()=> {
                    totalData={totalRegistros} 
                    totalPages={totalPaginas} 
                    changePageFather={changePagina}
-                   onEditOrDelete={onEditOrDelete}
+                   onChangeDataModel={onEditOrDelete}
                    onSearch={onSearch}
                    onChangeItemsPage={onChangeItemsPage}
                    setAscColumn={setAscColumn}

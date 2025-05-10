@@ -32,7 +32,7 @@ import ModalEditProps from "../types/ModalEditType";
             <div className="py-4">
                 {
                      contentModal.map((content, i) => (
-                        <div key={i} className="form-control mb-2">
+                        <div key={i} className="form-control mb-2 py-1.5">
                           <label className="label w-20">
                             <span className={`label-text ${content.header === 'ID' ? 'hidden' : ''}`}>
                             {content.header}
