@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { GoPencil } from "react-icons/go";
-import { MdDelete } from "react-icons/md";
 import actionPage from "../enums/ActionPage";
 import TableProps from "../types/TableProps";
 import Modal from "./Modal";
 import ModalWithData from "./ModalWithData";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
+import { ThemeContext } from "./Layout";
+import { RiDeleteBin7Line } from "react-icons/ri";
 
-const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSearch, onChangeDataModal, onChangeItemsPage, setAscColumn}: TableProps<T>) => {
+const Table = <T,>(
+    {data, columns, totalData, totalPages, 
+     changePageFather, onSearch, onChangeDataModel, 
+     onChangeItemsPage, setAscColumn
+    }: TableProps<T> ) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [search, setSearch] = useState<string>();
     const [isAscOrder, setIsAscOrder] = useState<boolean>(true);
     const [columnSorter, setColumnSorter] = useState<string | null>('id');
+    const {isThemeDark, setThemeDark} = useContext(ThemeContext);
 
     const changePage = (acao : actionPage) => {
         let novaPagina = currentPage;
@@ -44,7 +50,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
             onChangeDataModal(id);
       };
     
-    const handleEdit = (data: T) => {
+    const handleEdit = (data: any) => {
         if (data)
             onChangeDataModal(data.id,data);
     };
@@ -58,12 +64,12 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
         if (propertie == columnSorter){
             const novaOrdem = !isAscOrder;
             setIsAscOrder(novaOrdem);
-            setAscColumn(propertie, novaOrdem); 
-        }else{
-            setColumnSorter(propertie);
-            setIsAscOrder(true);
-            setAscColumn(propertie, true);
+            setAscColumn(propertie, novaOrdem);
+            return;
         }
+        setColumnSorter(propertie);
+        setIsAscOrder(true);
+        setAscColumn(propertie, true);
     }
 
     const getDinamicDescription = () => {
@@ -83,7 +89,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                 </label>
             </div>
             <div className="overflow-x-auto">
-                <table className="table table-zebra table-sm">
+                <table className={`table table-zebra table-sm`}>
                     <thead>
                         <tr>
                             {columns.map((column, index)=>(
@@ -113,7 +119,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
 
                                     <td className="flex gap-2">
                                     <ModalWithData<T>
-                                        classButton="btn btn-outline p-3 btn-warning"
+                                        classButton={`btn ${isThemeDark ? 'btn-outline' : '' } p-3 btn-warning`}
                                         idButton={`modal_edit_${item.getId()}`}
                                         contentButton={<GoPencil />}
                                         contentModal={columns}
@@ -122,9 +128,9 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                                         onConfirm={(data)=> handleEdit(data)}
                                     />
                                     <Modal
-                                        classButton="btn btn-outline p-3 btn-error"
+                                        classButton={`btn ${isThemeDark ? 'btn-outline' : '' } p-3 btn-error`}
                                         idButton={`modal_delete_${item.getId()}`}
-                                        contentButton={<MdDelete />}
+                                        contentButton={<RiDeleteBin7Line />}
                                         contentModal={<p>Deseja excluir <strong>{item[getDinamicDescription()]()}</strong>?</p>}
                                         title="Excluir item"
                                         onConfirm={()=> handleDelete(item.getId())}
@@ -163,7 +169,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                         <div className="join">
                             <button onClick={()=> changePage(actionPage.primeira)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<<'}</button>
                             <button onClick={()=> changePage(actionPage.retrocede)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'<'}</button>
-                            <button disabled className="text-amber-50 join-item btn btn-xs sm:btn-sm md:btn-md">{currentPage}</button>
+                            <button disabled className={`${isThemeDark ? 'text-amber-50' : 'text-gray-700'} join-item btn btn-xs sm:btn-sm md:btn-md`}>{currentPage}</button>
                             <button onClick={()=> changePage(actionPage.avanca)} className="join-item btn btn-xs sm:btn-sm md:btn-md" >{'>'}</button>
                             <button onClick={()=> changePage(actionPage.ultima)} className="join-item btn btn-xs sm:btn-sm md:btn-md">{'>>'}</button>
                         </div>
@@ -172,7 +178,7 @@ const Table = <T,>({data, columns, totalData, totalPages, changePageFather, onSe
                             <ModalWithData<T>
                                 classButton="btn btn-xs sm:btn-sm md:btn-md bg-blue-700 hover:bg-blue-500"
                                 idButton={`modal_insert`}
-                                contentButton={<span> Cadastrar</span>}
+                                contentButton={<span className={`${isThemeDark ? '' : 'text-white'}`}> Cadastrar</span>}
                                 contentModal={columns}
                                 title="Cadastro"
                                 onConfirm={(newModel)=> handleInsert(newModel)}
