@@ -10,7 +10,7 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 
 const Table = <T,>(
     {data, columns, totalData, totalPages, 
-     changePageFather, onSearch, onChangeDataModel, 
+     changePageFather, onSearch, onChangeDataModal, 
      onChangeItemsPage, setAscColumn
     }: TableProps<T> ) => {
 
