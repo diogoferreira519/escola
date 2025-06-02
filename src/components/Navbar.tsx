@@ -10,12 +10,12 @@ const Navbar = () => {
   const {isThemeDark, setThemeDark} = useContext(ThemeContext)
 
     return (
-  <div className={isThemeDark ? 'navbar bg-base-300 shadow-sm w-full' : 'navbar bg-blue-400 shadow-sm w-full' }>
+  <div className={isThemeDark ? 'navbar bg-base-300 shadow-sm w-full' : 'navbar bg-blue-700 shadow-sm w-full' }>
         <div className="navbar-start">
             <Sidebar/>
         </div>
     <div className="lg:navbar-center">
-      <a className={`btn btn-ghost text-xl ${isThemeDark ? 'text-blue-400 hover:text-blue-100' : 'text-amber-50 hover:text-blue-400'}`} onClick={()=> navigate('/')}><LiaUniversitySolid className="size-8" />University</a>
+      <a className={`btn btn-ghost text-xl ${isThemeDark ? 'text-blue-400 hover:text-blue-100' : 'text-amber-50 hover:text-blue-400'}`} onClick={()=> navigate('/')}><LiaUniversitySolid className="size-8" />Universify</a>
     </div>
     <div className="navbar-end">
       <button className="btn btn-ghost btn-circle md:block hidden" onClick={()=> setThemeDark((prevState: boolean)=> !prevState)}>

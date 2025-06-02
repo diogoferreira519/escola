@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import ModelPessoa from "../models/ModelPessoa";
-import axios from "axios";
 import Table from "../components/Table";
 import Column from "../types/ColumnType";
 import { useLocation } from "react-router-dom";
 import { Role } from "../enums/Role";
 import { toast } from "react-toastify";
 import ColumnOrder from "../interfaces/ColumnOrder";
+import axiosInstance from "../utils/axiosInstance";
 
 const Pessoas = ()=> {
     const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +37,7 @@ const Pessoas = ()=> {
     }
 
     const getData = async ()=>{
-        await axios.get(url, {
+        await axiosInstance.get(url, {
             params: {
                 page: pageUrl,
                 search: search,
@@ -80,7 +80,7 @@ const Pessoas = ()=> {
         };
 
         const urlInsert = import.meta.env.VITE_API_URL + '/pessoas/';
-        await axios.post(urlInsert, body)
+        await axiosInstance.post(urlInsert, body)
             .then(response => {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);
@@ -105,7 +105,7 @@ const Pessoas = ()=> {
         };
 
         const urlPut = import.meta.env.VITE_API_URL + '/pessoas/' + data.id;
-        await axios.put(urlPut, body)
+        await axiosInstance.put(urlPut, body)
             .then(response => {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);
@@ -120,7 +120,7 @@ const Pessoas = ()=> {
 
     const deleteData = async(id: number) =>{
         const urlDelete = import.meta.env.VITE_API_URL + '/pessoas/' + id;
-        await axios.delete(urlDelete)
+        await axiosInstance.delete(urlDelete)
             .then(response => {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);

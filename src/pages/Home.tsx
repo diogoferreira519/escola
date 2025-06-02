@@ -1,12 +1,16 @@
+import { useContext, useEffect, useState } from "react";
+import { ThemeContext } from "../components/Layout";
+
 function Home() {
+ const {isThemeDark, setThemeDark} = useContext(ThemeContext);
   return (
     <section className="flex flex-col lg:flex-row items-center justify-center gap-12 px-8 py-16">
       <div className="lg:w-7/12">
-        <h1 className="text-4xl font-extrabold mb-6 text-white drop-shadow-lg">
+        <h1 className={`text-4xl font-extrabold mb-6 ${isThemeDark ? 'text-white' :'text-blue-700'} drop-shadow-lg`}>
           📚 Importância de um Sistema de Cadastro
         </h1>
 
-        <div className="text-gray-300 space-y-6 text-lg leading-relaxed">
+        <div className={`${isThemeDark ? 'text-gray-300' :'text-blue-700'} space-y-6 text-lg leading-relaxed`}>
           <p>
             Um sistema de cadastro de alunos, docentes, cursos e matrículas é fundamental para o bom funcionamento de qualquer instituição de ensino. Ele centraliza e organiza informações essenciais, permitindo maior controle, agilidade e transparência na gestão acadêmica e administrativa.
           </p>

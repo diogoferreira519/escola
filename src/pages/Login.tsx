@@ -53,12 +53,14 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit(handleLoginData)} className="w-full flex flex-col items-center gap-6">
-            
-            <input
-              className="p-2 border border-gray-300 w-5/6 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="E-mail"
-              {...register("email")}
-            />
+            <div className="w-5/6">
+                <label className="block text-sm mb-1 text-blue-700">E-mail</label>
+                <input
+                    className="p-2 border border-gray-300 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Digite o seu e-mail"
+                {...register("email")}
+                />
+            </div>
 
             <div className="w-5/6">
               <label className="block text-sm mb-1 text-blue-700">Senha</label>
