@@ -1,17 +1,20 @@
+import { useContext } from 'react';
 import { FaUniversity } from 'react-icons/fa';
 import { IoIosHome, IoMdMenu } from 'react-icons/io';
 import { IoPersonSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { ThemeContext } from './Layout';
 
 const Sidebar = () => {
 
     const navigate = useNavigate();
+    const {isThemeDark, setThemeDark} = useContext(ThemeContext);
     return (
     <>
         <div className="drawer z-50">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
-                <label htmlFor="my-drawer"><IoMdMenu className="pt-2 size-12 rounded-sm"/></label>
+                <label htmlFor="my-drawer"><IoMdMenu className={`pt-2 size-12 rounded-sm ${isThemeDark ? '' : 'text-white'}`}/></label>
             </div>
             <div className="drawer-side">
                 <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>

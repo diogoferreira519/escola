@@ -1,4 +1,5 @@
 import ModalEditProps from "../types/ModalEditType";
+import { toast } from "react-toastify";
 
   const ModalWithData = <T,>({
     classButton,
@@ -14,21 +15,32 @@ import ModalEditProps from "../types/ModalEditType";
       const dialog = document.getElementById(idButton) as HTMLDialogElement;
       const inputs = dialog.querySelectorAll<HTMLInputElement>('input');
       const selects = dialog.querySelectorAll<HTMLSelectElement>('select');
-    
       const data: Record<string, string | boolean> = {};
+      let erro = false;
 
       inputs.forEach(input => {
-        if (input.type === 'checkbox')
-          data[input.name] = input.checked;
-        else
+        if (input.type === 'text'){
+          if (!input.value || input.value == ''){
+            erro = true;
+            toast.warning('Preencha ' + input.name);
+          }
           data[input.name] = input.value;
+        }
+        else if (input.type === 'checkbox')
+          data[input.name] = input.checked;
       });
 
       selects.forEach(select =>{
+        if (!select.value || select.value == '0'){
+          erro = true;
+          toast.error('Selecione um/uma ' + select.name);
+        } 
         data[select.name] = select.value;
       });
 
-      onConfirm(data as T);
+      if (!erro){
+        onConfirm(data as T);
+      }
     };
 
     return(
@@ -41,7 +53,7 @@ import ModalEditProps from "../types/ModalEditType";
             <div className="py-4">
                 {
                      contentModal.map((content, i) => (
-                        <div key={i} className="form-control mb-2">
+                        <div key={i} className="form-control mb-2 py-1.5">
                           <label className="label w-20">
                             <span className={`label-text ${content.header === 'ID' ? 'hidden' : ''}`}>
                             {content.header}
@@ -53,6 +65,7 @@ import ModalEditProps from "../types/ModalEditType";
                             type={content.header !== 'ID' ? 'text' : 'hidden'}
                             className="input input-bordered"
                             name={content.propertie}
+                            required
                             defaultValue={model ? model[content.acessor]() : ''}
                           />
                            }
@@ -61,7 +74,7 @@ import ModalEditProps from "../types/ModalEditType";
                             <input name={content.propertie}type="checkbox" defaultChecked={model ? model[content.acessor]() : false} className="toggle toggle-info" />
                            }
                           {content.isEnum && content.enumType &&
-                            <select name={content.propertie}defaultValue={model ? model[content.acessor]() : 0} className="select">
+                            <select required name={content.propertie}defaultValue={model ? model[content.acessor]() : 0} className="select">
                              <option value={0} key={0}>Selecione uma opção</option>
                              {Object.values(content.enumType).map((valor)=>(
                               <option key={valor} value={valor}>{valor.charAt(0).toUpperCase() + valor.slice(1)}</option>

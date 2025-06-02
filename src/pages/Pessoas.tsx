@@ -78,7 +78,6 @@ const Pessoas = ()=> {
             ativo: data.ativo ? 1 : 0,
             role: data.role
         };
-        console.log(body);
 
         const urlInsert = import.meta.env.VITE_API_URL + '/pessoas/';
         await axios.post(urlInsert, body)
@@ -86,6 +85,7 @@ const Pessoas = ()=> {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);
                 
+                toast.success('Registro criado');
                 getData()
             })
             .catch(err => {
@@ -94,11 +94,13 @@ const Pessoas = ()=> {
     }
 
     const putData = async (data: T)=> {
+
+        console.log(data);
         const body = {
             nome: data.nome,
             email: data.email,
             cpf: data.cpf,
-            ativo: data.isAtivo ? 1 : 0,
+            ativo: data.ativo ? 1 : 0,
             role: data.role
         };
 
@@ -108,6 +110,7 @@ const Pessoas = ()=> {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);
                 
+                toast.success('Registro atualizado');
                 getData()
             })
             .catch(err => {
@@ -122,6 +125,7 @@ const Pessoas = ()=> {
                 if (!response.status)
                     throw new Error(`Erro na requisição ${response.status}`);
                 
+                toast.success('Registro deletado');
                 getData();
             })
             .catch(err => {
