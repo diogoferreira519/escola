@@ -7,6 +7,9 @@ import Layout from './components/Layout';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Login from './pages/Login';
+import PrivateRoute from './middlewares/PrivateRoute';
+import CreateAccount from './pages/CreateAccount';
 
 function App() {
 
@@ -14,7 +17,9 @@ function App() {
     <>
     <Router>
       <Routes>
-        <Route path="/" element={<Layout/>}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/login/create-account" element={<CreateAccount />} />
+        <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
           <Route index element={<Home/>}/>
           <Route path="/cursos" element={<Cursos/>}/>
           <Route path="/pessoas" element={<Pessoas/>}/>
